@@ -14,14 +14,14 @@ final class User: Model, Content {
     var lastName: String?
     @Field(key: "email")
     var email: String?
-    @Field(key: "password")
+    @OptionalField(key: "password")
     var password: String?
 
     init() {
 
     }
 
-    init(userID: UUID? = nil, firstName: String, lastName: String, email: String, password: String) {
+    init(userID: UUID? = nil, firstName: String, lastName: String, email: String, password: String?) {
         self.id = userID
         self.firstName = firstName
         self.lastName = lastName
