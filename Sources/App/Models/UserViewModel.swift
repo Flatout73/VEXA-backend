@@ -2,7 +2,7 @@ import Fluent
 import Vapor
 import Foundation
 
-final class User: Model, Content {
+final class UserViewModel: Model, Content {
     static let schema = "users"
     
     @ID(key: .id)
