@@ -2,7 +2,7 @@ import Fluent
 import Vapor
 import Foundation
 
-final class UserViewModel: Model, Content {
+final class UserModel: Model, Vapor.Content {
     static let schema = "users"
     
     @ID(key: .id)
@@ -14,6 +14,8 @@ final class UserViewModel: Model, Content {
     var lastName: String?
     @Field(key: "email")
     var email: String?
+    @OptionalField(key: "imageURL")
+    var imageURL: URL?
     @OptionalField(key: "password")
     var password: String?
 

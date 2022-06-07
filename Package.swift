@@ -6,6 +6,9 @@ let package = Package(
     platforms: [
        .macOS(.v12)
     ],
+    products: [
+        .library(name: "Protobuf", targets: ["Protobuf"])
+    ],
     dependencies: [
         // 💧 A server-side Swift web framework.
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
@@ -15,6 +18,9 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.6.0"),
     ],
     targets: [
+        .target(name: "Protobuf", dependencies: [
+            .product(name: "SwiftProtobuf", package: "swift-protobuf")
+        ]),
         .target(
             name: "App",
             dependencies: [
@@ -22,8 +28,7 @@ let package = Package(
                 .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver"),
                 .product(name: "Leaf", package: "leaf"),
                 .product(name: "Vapor", package: "vapor"),
-                .product(name: "SwiftProtobuf", package: "swift-protobuf"),
-
+                "Protobuf"
             ],
             swiftSettings: [
                 // Enable better optimizations when building in Release configuration. Despite the use of
