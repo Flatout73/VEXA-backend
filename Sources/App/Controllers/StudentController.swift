@@ -17,12 +17,11 @@ struct StudentController: RouteCollection {
         guard let id = req.parameters.get("x", as: UUID.self) else {
             throw Abort(.badRequest)
         }
-        var response = GeneralResponse()
-        guard let user = try await StudentModel.find(id, on: req.db)?.requestStudent else {
+        
+        guard let user = try await StudentModel.find(id, on: req.db)?.requestStudent() else {
             throw Abort(.notFound)
         }
-        response.content = try Google_Protobuf_Any(message: user)
-        return Proto(response: response)
+        return Proto(from: try Google_Protobuf_Any(message: user))
     }
 
     func create(req: Request) async throws -> StudentModel {
@@ -44,7 +43,7 @@ struct StudentController: RouteCollection {
 }
 
 extension StudentModel {
-    var requestStudent: Student? {
+    func requestStudent() throws -> Student {
         var user = Student()
         if let id = self.id?.uuidString {
             user.id = id
@@ -52,9 +51,9 @@ extension StudentModel {
             user.lastName = self.user.lastName ?? ""
             user.email = self.user.email ?? ""
             return user
+        } else {
+            throw AuthenticationError.userNotFound
         }
-
-        return nil
     }
 }
 

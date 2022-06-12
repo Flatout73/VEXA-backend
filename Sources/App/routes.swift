@@ -1,6 +1,7 @@
 import Fluent
 import Vapor
 import Protobuf
+import JWT
 
 func routes(_ app: Application) throws {
     app.get { req in
@@ -11,15 +12,18 @@ func routes(_ app: Application) throws {
         return "Hello, world!"
     }
 
+//    let passwordProtected = app.grouped(UserModel.authenticator(), UserModel.guardMiddleware())
+//    passwordProtected.post("login") { req -> ClientTokenReponse in
+//        let user = try req.auth.require(UserModel.self)
+//        let payload = try SessionJWTToken(with: user)
+//        return ClientTokenReponse(token: try req.jwt.sign(payload))
+//    }
+
+    try app.group("api") { api in
+        // Authentication
+        try api.register(collection: AuthenticationController())
+    }
+
     try app.register(collection: ContentController())
     try app.register(collection: StudentController())
-}
-
-
-struct Proto: AsyncResponseEncodable {
-    let response: GeneralResponse
-
-    func encodeResponse(for request: Request) async throws -> Response {
-        return .init(status: .ok, body: .init(string: try response.jsonString()))
-    }
 }

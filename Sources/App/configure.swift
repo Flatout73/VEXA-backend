@@ -22,6 +22,9 @@ public func configure(_ app: Application) throws {
 
     app.autoMigrate()
 
+    try services(app)
+    app.jwt.signers.use(.hs256(key: "VEXA"))
+
     // register routes
     try routes(app)
 }
