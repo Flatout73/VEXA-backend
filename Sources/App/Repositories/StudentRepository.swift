@@ -15,7 +15,7 @@ protocol UserRepository: Repository {
     func find(id: UUID?) async throws -> UserModel?
     func find(email: String) async throws -> UserModel?
     func setAsync<Field>(_ field: KeyPath<UserModel, Field>, to value: Field.Value, for userID: UUID) async throws where Field: QueryableProperty, Field.Model == UserModel
-    func set<Field>(_ field: KeyPath<StudentModel, Field>, to value: Field.Value, for userID: UUID) -> EventLoopFuture<Void> where Field: QueryableProperty, Field.Model == StudentModel
+    func set<Field>(_ field: KeyPath<UserModel, Field>, to value: Field.Value, for userID: UUID) -> EventLoopFuture<Void> where Field: QueryableProperty, Field.Model == UserModel
     func count() async throws -> Int
 }
 
@@ -55,10 +55,10 @@ struct DatabaseUserRepository: UserRepository, DatabaseRepository {
             .update()
     }
 
-    func set<Field>(_ field: KeyPath<StudentModel, Field>, to value: Field.Value, for userID: UUID) -> EventLoopFuture<Void>
-        where Field: QueryableProperty, Field.Model == StudentModel
+    func set<Field>(_ field: KeyPath<UserModel, Field>, to value: Field.Value, for userID: UUID) -> EventLoopFuture<Void>
+        where Field: QueryableProperty, Field.Model == UserModel
     {
-        return StudentModel.query(on: database)
+        return UserModel.query(on: database)
             .filter(\.$id == userID)
             .set(field, to: value)
             .update()
