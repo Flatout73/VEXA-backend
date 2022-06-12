@@ -29,7 +29,7 @@ extension Application {
                     $0.repositories.use { DatabaseUserRepository(database: $0.db) }
                     $0.repositories.use { DatabaseEmailTokenRepository(database: $0.db) }
                     $0.repositories.use { DatabaseRefreshTokenRepository(database: $0.db) }
-//                    $0.repositories.use { DatabasePasswordTokenRepository(database: $0.db) }
+                    $0.repositories.use { DatabasePasswordTokenRepository(database: $0.db) }
                 }
             }
 
@@ -37,10 +37,10 @@ extension Application {
         }
 
         final class Storage {
-            var makeUserRepository: ((Application) -> StudentRepository)?
+            var makeUserRepository: ((Application) -> UserRepository)?
             var makeEmailTokenRepository: ((Application) -> EmailTokenRepository)?
             var makeRefreshTokenRepository: ((Application) -> RefreshTokenRepository)?
-//            var makePasswordTokenRepository: ((Application) -> PasswordTokenRepository)?
+            var makePasswordTokenRepository: ((Application) -> PasswordTokenRepository)?
             init() { }
         }
 

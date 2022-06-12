@@ -8,41 +8,51 @@
 import Vapor
 import Fluent
 
-protocol StudentRepository: Repository {
-    func create(_ user: StudentModel) async throws
-    func delete(id: UUID) -> EventLoopFuture<Void>
-    func all() -> EventLoopFuture<[StudentModel]>
-    func find(id: UUID?) -> EventLoopFuture<StudentModel?>
-    func find(email: String) -> EventLoopFuture<StudentModel?>
+protocol UserRepository: Repository {
+    func create(_ user: UserModel) async throws
+    func delete(id: UUID) async throws
+    func all() async throws -> [UserModel]
+    func find(id: UUID?) async throws -> UserModel?
+    func find(email: String) async throws -> UserModel?
+    func setAsync<Field>(_ field: KeyPath<UserModel, Field>, to value: Field.Value, for userID: UUID) async throws where Field: QueryableProperty, Field.Model == UserModel
     func set<Field>(_ field: KeyPath<StudentModel, Field>, to value: Field.Value, for userID: UUID) -> EventLoopFuture<Void> where Field: QueryableProperty, Field.Model == StudentModel
-    func count() -> EventLoopFuture<Int>
+    func count() async throws -> Int
 }
 
-struct DatabaseUserRepository: StudentRepository, DatabaseRepository {
+struct DatabaseUserRepository: UserRepository, DatabaseRepository {
     let database: Database
 
-    func create(_ user: StudentModel) async throws {
+    func create(_ user: UserModel) async throws {
         return try await user.create(on: database)
     }
 
-    func delete(id: UUID) -> EventLoopFuture<Void> {
-        return StudentModel.query(on: database)
+    func delete(id: UUID) async throws {
+        return try await UserModel.query(on: database)
             .filter(\.$id == id)
             .delete()
     }
 
-    func all() -> EventLoopFuture<[StudentModel]> {
-        return StudentModel.query(on: database).all()
+    func all() async throws -> [UserModel] {
+        return try await UserModel.query(on: database).all()
     }
 
-    func find(id: UUID?) -> EventLoopFuture<StudentModel?> {
-        return StudentModel.find(id, on: database)
+    func find(id: UUID?) async throws -> UserModel? {
+        return try await UserModel.find(id, on: database)
     }
 
-    func find(email: String) -> EventLoopFuture<StudentModel?> {
-        return StudentModel.query(on: database)
-            .filter(\.user.$email == email)
+    func find(email: String) async throws -> UserModel? {
+        return try await UserModel.query(on: database)
+            .filter(\.$email == email)
             .first()
+    }
+
+    func setAsync<Field>(_ field: KeyPath<UserModel, Field>, to value: Field.Value, for userID: UUID) async throws
+        where Field: QueryableProperty, Field.Model == UserModel
+    {
+        return try await UserModel.query(on: database)
+            .filter(\.$id == userID)
+            .set(field, to: value)
+            .update()
     }
 
     func set<Field>(_ field: KeyPath<StudentModel, Field>, to value: Field.Value, for userID: UUID) -> EventLoopFuture<Void>
@@ -54,13 +64,13 @@ struct DatabaseUserRepository: StudentRepository, DatabaseRepository {
             .update()
     }
 
-    func count() -> EventLoopFuture<Int> {
-        return StudentModel.query(on: database).count()
+    func count() async throws -> Int {
+        return try await UserModel.query(on: database).count()
     }
 }
 
 extension Application.Repositories {
-    var users: StudentRepository {
+    var users: UserRepository {
         guard let storage = storage.makeUserRepository else {
             fatalError("UserRepository not configured, use: app.userRepository.use()")
         }
@@ -68,7 +78,7 @@ extension Application.Repositories {
         return storage(app)
     }
 
-    func use(_ make: @escaping (Application) -> (StudentRepository)) {
+    func use(_ make: @escaping (Application) -> (UserRepository)) {
         storage.makeUserRepository = make
     }
 }

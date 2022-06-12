@@ -25,14 +25,14 @@ public struct LoginResponse {
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  public var student: Student {
-    get {return _student ?? Student()}
-    set {_student = newValue}
+  public var user: User {
+    get {return _user ?? User()}
+    set {_user = newValue}
   }
-  /// Returns true if `student` has been explicitly set.
-  public var hasStudent: Bool {return self._student != nil}
-  /// Clears the value of `student`. Subsequent reads from it will return its default value.
-  public mutating func clearStudent() {self._student = nil}
+  /// Returns true if `user` has been explicitly set.
+  public var hasUser: Bool {return self._user != nil}
+  /// Clears the value of `user`. Subsequent reads from it will return its default value.
+  public mutating func clearUser() {self._user = nil}
 
   public var accessToken: String = String()
 
@@ -42,7 +42,7 @@ public struct LoginResponse {
 
   public init() {}
 
-  fileprivate var _student: Student? = nil
+  fileprivate var _user: User? = nil
 }
 
 #if swift(>=5.5) && canImport(_Concurrency)
@@ -54,7 +54,7 @@ extension LoginResponse: @unchecked Sendable {}
 extension LoginResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = "LoginResponse"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "student"),
+    1: .same(proto: "user"),
     2: .same(proto: "accessToken"),
     3: .same(proto: "refreshToken"),
   ]
@@ -65,7 +65,7 @@ extension LoginResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularMessageField(value: &self._student) }()
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._user) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self.accessToken) }()
       case 3: try { try decoder.decodeSingularStringField(value: &self.refreshToken) }()
       default: break
@@ -78,7 +78,7 @@ extension LoginResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
     // allocates stack space for every if/case branch local when no optimizations
     // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
     // https://github.com/apple/swift-protobuf/issues/1182
-    try { if let v = self._student {
+    try { if let v = self._user {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
     } }()
     if !self.accessToken.isEmpty {
@@ -91,7 +91,7 @@ extension LoginResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
   }
 
   public static func ==(lhs: LoginResponse, rhs: LoginResponse) -> Bool {
-    if lhs._student != rhs._student {return false}
+    if lhs._user != rhs._user {return false}
     if lhs.accessToken != rhs.accessToken {return false}
     if lhs.refreshToken != rhs.refreshToken {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}

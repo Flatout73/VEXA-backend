@@ -44,12 +44,28 @@ struct StudentController: RouteCollection {
 
 extension StudentModel {
     func requestStudent() throws -> Student {
-        var user = Student()
+        var student = Student()
+        student.user = try self.user.requestUser()
+        return student
+    }
+}
+
+extension Student {
+    var viewModel: StudentModel {
+        let student = StudentModel()
+        student.user = self.user.viewModel
+        return student
+    }
+}
+
+extension UserModel {
+    func requestUser() throws -> User {
+        var user = User()
         if let id = self.id?.uuidString {
             user.id = id
-            user.firstName = self.user.firstName ?? ""
-            user.lastName = self.user.lastName ?? ""
-            user.email = self.user.email ?? ""
+            user.firstName = self.firstName ?? ""
+            user.lastName = self.lastName ?? ""
+            user.email = self.email ?? ""
             return user
         } else {
             throw AuthenticationError.userNotFound
@@ -57,14 +73,12 @@ extension StudentModel {
     }
 }
 
-extension Student {
-    var viewModel: StudentModel {
-        let student = StudentModel()
+extension User {
+    var viewModel: UserModel {
         let user = UserModel(firstName: self.firstName,
                              lastName: self.lastName,
                              email: self.email,
                              password: self.password)
-        student.user = user
-        return student
+        return user
     }
 }
