@@ -30,7 +30,7 @@ struct ContentController: RouteCollection {
         var array = ArrayResponse()
         array.content = contents
         response.arrayContent = array
-        return Proto(response: response)
+        return Proto(from: try Google_Protobuf_Any(message: response))
     }
 
     func create(req: Request) async throws -> ContentModel {

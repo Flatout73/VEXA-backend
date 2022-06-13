@@ -21,7 +21,7 @@ final class ContentModel: Model, Vapor.Content {
     var title: String?
     @OptionalField(key: "videoURL")
     var videoURL: URL?
-    @OptionalField(key: "nativeLanguage")
+    @OptionalField(key: "imageURL")
     var imageURL: URL?
     @Field(key: "likes")
     var likes: [String]

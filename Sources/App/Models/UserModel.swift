@@ -2,7 +2,7 @@ import Fluent
 import Vapor
 import Foundation
 
-final class UserModel: Model, Vapor.Content {
+final class UserModel: Content, Model, Authenticatable {
     static let schema = "users"
     
     @ID(key: .id)
@@ -19,15 +19,24 @@ final class UserModel: Model, Vapor.Content {
     @OptionalField(key: "password")
     var password: String?
 
+    @Field(key: "isAdmin")
+    var isAdmin: Bool
+    @Field(key: "isEmailVerified")
+    var isEmailVerified: Bool
+
     init() {
 
     }
 
-    init(userID: UUID? = nil, firstName: String, lastName: String, email: String, password: String?) {
+    init(userID: UUID? = nil, firstName: String, lastName: String, email: String,
+         password: String?, isAdmin: Bool = false,
+         isEmailVerified: Bool = false) {
         self.id = userID
         self.firstName = firstName
         self.lastName = lastName
         self.email = email
         self.password = password
+        self.isAdmin = isAdmin
+        self.isEmailVerified = isEmailVerified
     }
 }

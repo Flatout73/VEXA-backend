@@ -27,10 +27,10 @@ public struct GeneralResponse {
 
   public var testOneof: GeneralResponse.OneOf_TestOneof? = nil
 
-  public var error: Error {
+  public var error: GeneralError {
     get {
       if case .error(let v)? = testOneof {return v}
-      return Error()
+      return GeneralError()
     }
     set {testOneof = .error(newValue)}
   }
@@ -54,7 +54,7 @@ public struct GeneralResponse {
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum OneOf_TestOneof: Equatable {
-    case error(Error)
+    case error(GeneralError)
     case content(SwiftProtobuf.Google_Protobuf_Any)
     case arrayContent(ArrayResponse)
 
@@ -107,7 +107,7 @@ extension GeneralResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try {
-        var v: Error?
+        var v: GeneralError?
         var hadOneofValue = false
         if let current = self.testOneof {
           hadOneofValue = true
