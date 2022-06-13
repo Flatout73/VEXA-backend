@@ -17,6 +17,8 @@ public func configure(_ app: Application) throws {
     ), as: .psql)
 
     app.migrations.add(CreateUser())
+    app.migrations.add(CreateAmbassador())
+    app.migrations.add(CreateContent())
 
     app.views.use(.leaf)
 
