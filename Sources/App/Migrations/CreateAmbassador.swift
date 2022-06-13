@@ -14,11 +14,12 @@ struct CreateAmbassador: AsyncMigration {
         try await database.schema("ambassadors")
             .id()
             .field("user", .uuid, .references("users", "id", onDelete: .cascade))
-            .field("content", .array(of: .uuid), .references("contents", "id"))
+            //.field("contents", .array(of: .uuid))
+            //.foreignKey("contents", references: "contents", "id", onDelete: .cascade)
             .create()
     }
 
     func revert(on database: Database) async throws {
-        try await database.schema("users").delete()
+        try await database.schema("ambassadors").delete()
     }
 }

@@ -20,15 +20,15 @@ final class ContentModel: Model, Vapor.Content {
     @Field(key: "title")
     var title: String?
     @OptionalField(key: "videoURL")
-    var videoURL: URL?
+    var videoURL: String?
     @OptionalField(key: "imageURL")
-    var imageURL: URL?
+    var imageURL: String?
     @Field(key: "likes")
     var likes: [String]
     @Field(key: "approved")
     var approved: Bool
 
     init() {
-
+        self.approved = false
     }
 }

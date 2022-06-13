@@ -23,7 +23,7 @@ struct ContentController: RouteCollection {
     func fetchAll(req: Request) async throws -> Proto {
         var response = GeneralResponse()
         let contents = try await ContentModel.query(on: req.db).all()
-            .compactMap { $0.requestContent }
+            .compactMap { try? $0.requestContent() }
             .compactMap {
                 try? Google_Protobuf_Any(message: $0)
             }
@@ -34,12 +34,15 @@ struct ContentController: RouteCollection {
     }
 
     func create(req: Request) async throws -> ContentModel {
-        guard let content = req.body.string else {
+        guard let contentString = req.body.string else {
             throw Abort(.badRequest)
         }
-        let userVM = try Protobuf.Content(jsonString: content).viewModel
-        try await userVM.save(on: req.db)
-        return userVM
+        var confing = JSONDecodingOptions()
+        confing.ignoreUnknownFields = true
+        let content = try Protobuf.Content(jsonString: contentString, options: confing)
+        let vm = try await content.viewModel(for: req.db)
+        try await vm.save(on: req.db)
+        return vm
     }
 
     func delete(req: Request) async throws -> HTTPStatus {
@@ -52,37 +55,40 @@ struct ContentController: RouteCollection {
 }
 
 extension ContentModel {
-    var requestContent: Protobuf.Content? {
+    func requestContent() throws -> Protobuf.Content {
         var content = Content()
-        if let id = self.id?.uuidString {
-            content.id = id
-            content.title = title ?? ""
-            content.imageURL = imageURL?.path ?? ""
-            content.videoURL = videoURL?.path ?? ""
-            content.likes = likes
-            var ambassador = Ambassador()
-            ambassador.id = self.ambassador.id?.uuidString ?? ""
-            ambassador.email = self.ambassador.user.email ?? ""
-            ambassador.firstName = self.ambassador.user.firstName ?? ""
-            ambassador.lastName = self.ambassador.user.lastName ?? ""
-            content.ambassador = ambassador
-            return content
-        }
-
-        return nil
+        content.id = id?.uuidString ?? ""
+        content.title = title ?? ""
+        content.imageURL = imageURL ?? ""
+        content.videoURL = videoURL ?? ""
+        content.likes = likes
+        var ambassador = Ambassador()
+        ambassador.id = self.$ambassador.value?.id?.uuidString ?? ""
+        //ambassador.user = try self.ambassador.user.$id.requestUser()
+        content.ambassador = ambassador
+        return content
     }
 }
 
 extension Protobuf.Content {
-    var viewModel: ContentModel {
+    func viewModel(for db: Database) async throws -> ContentModel {
         let content = ContentModel()
         content.id = UUID(uuidString: id)
-        content.imageURL = URL(string: imageURL)
-        content.videoURL = URL(string: videoURL)
+        content.imageURL = imageURL
+        content.videoURL = videoURL
+        content.title = title
+        content.likes = likes
+        //try await content.save(on: db)
+        let user = self.ambassador.user.viewModel
+        try await user.save(on: db)
         let ambassador = AmbassadorModel()
-        ambassador.id = UUID(uuidString: self.ambassador.id)
-        ambassador.user.firstName = self.ambassador.firstName
-        content.ambassador = ambassador
+        ambassador.$user.id = user.id!
+        try await ambassador.save(on: db)
+        try await ambassador.$contents.create(content, on: db)
+//        let uni = UniversityModel()
+//        uni.name = self.ambassador.university.name
+//        try await uni.$ambassadors.create(ambassador, on: db)
+
         return content
     }
 }

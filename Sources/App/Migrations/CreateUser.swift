@@ -8,6 +8,8 @@ struct CreateUser: AsyncMigration {
             .field("lastName", .string, .required)
             .field("email", .string, .required)
             .field("password", .string)
+            .field("isAdmin", .bool)
+            .field("isEmailVerified", .bool)
             .create()
     }
 

@@ -25,7 +25,14 @@ public struct Content {
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  public var id: String = String()
+  public var id: String {
+    get {return _id ?? String()}
+    set {_id = newValue}
+  }
+  /// Returns true if `id` has been explicitly set.
+  public var hasID: Bool {return self._id != nil}
+  /// Clears the value of `id`. Subsequent reads from it will return its default value.
+  public mutating func clearID() {self._id = nil}
 
   public var ambassador: Ambassador {
     get {return _ambassador ?? Ambassador()}
@@ -38,7 +45,14 @@ public struct Content {
 
   public var title: String = String()
 
-  public var videoURL: String = String()
+  public var videoURL: String {
+    get {return _videoURL ?? String()}
+    set {_videoURL = newValue}
+  }
+  /// Returns true if `videoURL` has been explicitly set.
+  public var hasVideoURL: Bool {return self._videoURL != nil}
+  /// Clears the value of `videoURL`. Subsequent reads from it will return its default value.
+  public mutating func clearVideoURL() {self._videoURL = nil}
 
   public var imageURL: String {
     get {return _imageURL ?? String()}
@@ -55,7 +69,9 @@ public struct Content {
 
   public init() {}
 
+  fileprivate var _id: String? = nil
   fileprivate var _ambassador: Ambassador? = nil
+  fileprivate var _videoURL: String? = nil
   fileprivate var _imageURL: String? = nil
 }
 
@@ -82,10 +98,10 @@ extension Content: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
+      case 1: try { try decoder.decodeSingularStringField(value: &self._id) }()
       case 2: try { try decoder.decodeSingularMessageField(value: &self._ambassador) }()
       case 3: try { try decoder.decodeSingularStringField(value: &self.title) }()
-      case 4: try { try decoder.decodeSingularStringField(value: &self.videoURL) }()
+      case 4: try { try decoder.decodeSingularStringField(value: &self._videoURL) }()
       case 5: try { try decoder.decodeSingularStringField(value: &self._imageURL) }()
       case 6: try { try decoder.decodeRepeatedStringField(value: &self.likes) }()
       default: break
@@ -98,18 +114,18 @@ extension Content: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
     // allocates stack space for every if/case branch local when no optimizations
     // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
     // https://github.com/apple/swift-protobuf/issues/1182
-    if !self.id.isEmpty {
-      try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
-    }
+    try { if let v = self._id {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 1)
+    } }()
     try { if let v = self._ambassador {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
     } }()
     if !self.title.isEmpty {
       try visitor.visitSingularStringField(value: self.title, fieldNumber: 3)
     }
-    if !self.videoURL.isEmpty {
-      try visitor.visitSingularStringField(value: self.videoURL, fieldNumber: 4)
-    }
+    try { if let v = self._videoURL {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 4)
+    } }()
     try { if let v = self._imageURL {
       try visitor.visitSingularStringField(value: v, fieldNumber: 5)
     } }()
@@ -120,10 +136,10 @@ extension Content: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
   }
 
   public static func ==(lhs: Content, rhs: Content) -> Bool {
-    if lhs.id != rhs.id {return false}
+    if lhs._id != rhs._id {return false}
     if lhs._ambassador != rhs._ambassador {return false}
     if lhs.title != rhs.title {return false}
-    if lhs.videoURL != rhs.videoURL {return false}
+    if lhs._videoURL != rhs._videoURL {return false}
     if lhs._imageURL != rhs._imageURL {return false}
     if lhs.likes != rhs.likes {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}

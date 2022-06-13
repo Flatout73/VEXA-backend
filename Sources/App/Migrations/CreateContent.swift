@@ -18,10 +18,11 @@ struct CreateContent: AsyncMigration {
             .field("likes", .array(of: .string), .required)
             .field("approved", .bool, .required)
             .field("ambassador", .uuid, .references("ambassadors", "id"))
+            //.foreignKey("ambassador", references: "ambassadors", "id", onDelete: .cascade)
             .create()
     }
 
     func revert(on database: Database) async throws {
-        try await database.schema("users").delete()
+        try await database.schema("contents").delete()
     }
 }

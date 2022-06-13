@@ -25,41 +25,41 @@ public struct GeneralResponse {
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  public var testOneof: GeneralResponse.OneOf_TestOneof? = nil
+  public var response: GeneralResponse.OneOf_Response? = nil
 
   public var error: GeneralError {
     get {
-      if case .error(let v)? = testOneof {return v}
+      if case .error(let v)? = response {return v}
       return GeneralError()
     }
-    set {testOneof = .error(newValue)}
+    set {response = .error(newValue)}
   }
 
   public var content: SwiftProtobuf.Google_Protobuf_Any {
     get {
-      if case .content(let v)? = testOneof {return v}
+      if case .content(let v)? = response {return v}
       return SwiftProtobuf.Google_Protobuf_Any()
     }
-    set {testOneof = .content(newValue)}
+    set {response = .content(newValue)}
   }
 
   public var arrayContent: ArrayResponse {
     get {
-      if case .arrayContent(let v)? = testOneof {return v}
+      if case .arrayContent(let v)? = response {return v}
       return ArrayResponse()
     }
-    set {testOneof = .arrayContent(newValue)}
+    set {response = .arrayContent(newValue)}
   }
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  public enum OneOf_TestOneof: Equatable {
+  public enum OneOf_Response: Equatable {
     case error(GeneralError)
     case content(SwiftProtobuf.Google_Protobuf_Any)
     case arrayContent(ArrayResponse)
 
   #if !swift(>=4.1)
-    public static func ==(lhs: GeneralResponse.OneOf_TestOneof, rhs: GeneralResponse.OneOf_TestOneof) -> Bool {
+    public static func ==(lhs: GeneralResponse.OneOf_Response, rhs: GeneralResponse.OneOf_Response) -> Bool {
       // The use of inline closures is to circumvent an issue where the compiler
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
@@ -87,7 +87,7 @@ public struct GeneralResponse {
 
 #if swift(>=5.5) && canImport(_Concurrency)
 extension GeneralResponse: @unchecked Sendable {}
-extension GeneralResponse.OneOf_TestOneof: @unchecked Sendable {}
+extension GeneralResponse.OneOf_Response: @unchecked Sendable {}
 #endif  // swift(>=5.5) && canImport(_Concurrency)
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
@@ -109,40 +109,40 @@ extension GeneralResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
       case 1: try {
         var v: GeneralError?
         var hadOneofValue = false
-        if let current = self.testOneof {
+        if let current = self.response {
           hadOneofValue = true
           if case .error(let m) = current {v = m}
         }
         try decoder.decodeSingularMessageField(value: &v)
         if let v = v {
           if hadOneofValue {try decoder.handleConflictingOneOf()}
-          self.testOneof = .error(v)
+          self.response = .error(v)
         }
       }()
       case 2: try {
         var v: SwiftProtobuf.Google_Protobuf_Any?
         var hadOneofValue = false
-        if let current = self.testOneof {
+        if let current = self.response {
           hadOneofValue = true
           if case .content(let m) = current {v = m}
         }
         try decoder.decodeSingularMessageField(value: &v)
         if let v = v {
           if hadOneofValue {try decoder.handleConflictingOneOf()}
-          self.testOneof = .content(v)
+          self.response = .content(v)
         }
       }()
       case 3: try {
         var v: ArrayResponse?
         var hadOneofValue = false
-        if let current = self.testOneof {
+        if let current = self.response {
           hadOneofValue = true
           if case .arrayContent(let m) = current {v = m}
         }
         try decoder.decodeSingularMessageField(value: &v)
         if let v = v {
           if hadOneofValue {try decoder.handleConflictingOneOf()}
-          self.testOneof = .arrayContent(v)
+          self.response = .arrayContent(v)
         }
       }()
       default: break
@@ -155,17 +155,17 @@ extension GeneralResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
     // allocates stack space for every if/case branch local when no optimizations
     // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
     // https://github.com/apple/swift-protobuf/issues/1182
-    switch self.testOneof {
+    switch self.response {
     case .error?: try {
-      guard case .error(let v)? = self.testOneof else { preconditionFailure() }
+      guard case .error(let v)? = self.response else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
     }()
     case .content?: try {
-      guard case .content(let v)? = self.testOneof else { preconditionFailure() }
+      guard case .content(let v)? = self.response else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
     }()
     case .arrayContent?: try {
-      guard case .arrayContent(let v)? = self.testOneof else { preconditionFailure() }
+      guard case .arrayContent(let v)? = self.response else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
     }()
     case nil: break
@@ -174,7 +174,7 @@ extension GeneralResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
   }
 
   public static func ==(lhs: GeneralResponse, rhs: GeneralResponse) -> Bool {
-    if lhs.testOneof != rhs.testOneof {return false}
+    if lhs.response != rhs.response {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

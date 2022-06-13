@@ -25,13 +25,23 @@ public struct Ambassador {
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  public var id: String = String()
+  public var id: String {
+    get {return _id ?? String()}
+    set {_id = newValue}
+  }
+  /// Returns true if `id` has been explicitly set.
+  public var hasID: Bool {return self._id != nil}
+  /// Clears the value of `id`. Subsequent reads from it will return its default value.
+  public mutating func clearID() {self._id = nil}
 
-  public var firstName: String = String()
-
-  public var lastName: String = String()
-
-  public var email: String = String()
+  public var user: User {
+    get {return _user ?? User()}
+    set {_user = newValue}
+  }
+  /// Returns true if `user` has been explicitly set.
+  public var hasUser: Bool {return self._user != nil}
+  /// Clears the value of `user`. Subsequent reads from it will return its default value.
+  public mutating func clearUser() {self._user = nil}
 
   public var university: University {
     get {return _university ?? University()}
@@ -46,6 +56,8 @@ public struct Ambassador {
 
   public init() {}
 
+  fileprivate var _id: String? = nil
+  fileprivate var _user: User? = nil
   fileprivate var _university: University? = nil
 }
 
@@ -59,9 +71,7 @@ extension Ambassador: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
   public static let protoMessageName: String = "Ambassador"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "id"),
-    2: .same(proto: "firstName"),
-    3: .same(proto: "lastName"),
-    4: .same(proto: "email"),
+    2: .same(proto: "user"),
     6: .same(proto: "university"),
   ]
 
@@ -71,10 +81,8 @@ extension Ambassador: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.firstName) }()
-      case 3: try { try decoder.decodeSingularStringField(value: &self.lastName) }()
-      case 4: try { try decoder.decodeSingularStringField(value: &self.email) }()
+      case 1: try { try decoder.decodeSingularStringField(value: &self._id) }()
+      case 2: try { try decoder.decodeSingularMessageField(value: &self._user) }()
       case 6: try { try decoder.decodeSingularMessageField(value: &self._university) }()
       default: break
       }
@@ -86,18 +94,12 @@ extension Ambassador: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
     // allocates stack space for every if/case branch local when no optimizations
     // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
     // https://github.com/apple/swift-protobuf/issues/1182
-    if !self.id.isEmpty {
-      try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
-    }
-    if !self.firstName.isEmpty {
-      try visitor.visitSingularStringField(value: self.firstName, fieldNumber: 2)
-    }
-    if !self.lastName.isEmpty {
-      try visitor.visitSingularStringField(value: self.lastName, fieldNumber: 3)
-    }
-    if !self.email.isEmpty {
-      try visitor.visitSingularStringField(value: self.email, fieldNumber: 4)
-    }
+    try { if let v = self._id {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 1)
+    } }()
+    try { if let v = self._user {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+    } }()
     try { if let v = self._university {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 6)
     } }()
@@ -105,10 +107,8 @@ extension Ambassador: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
   }
 
   public static func ==(lhs: Ambassador, rhs: Ambassador) -> Bool {
-    if lhs.id != rhs.id {return false}
-    if lhs.firstName != rhs.firstName {return false}
-    if lhs.lastName != rhs.lastName {return false}
-    if lhs.email != rhs.email {return false}
+    if lhs._id != rhs._id {return false}
+    if lhs._user != rhs._user {return false}
     if lhs._university != rhs._university {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true

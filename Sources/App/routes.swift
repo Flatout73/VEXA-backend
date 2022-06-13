@@ -22,8 +22,10 @@ func routes(_ app: Application) throws {
     try app.group("api") { api in
         // Authentication
         try api.register(collection: AuthenticationController())
+
+        try api.register(collection: ContentController())
     }
 
-    try app.register(collection: ContentController())
+
     try app.register(collection: StudentController())
 }

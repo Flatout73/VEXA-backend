@@ -20,6 +20,6 @@ final class UniversityModel: Model, Vapor.Content {
     @Field(key: "tags")
     var tags: [String]
 
-    @Children(for: \.$university)
-    var ambassadors: [AmbassadorModel]
+//    @Children(for: \.$university)
+//    var ambassadors: [AmbassadorModel]
 }

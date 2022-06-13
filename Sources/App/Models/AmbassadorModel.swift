@@ -17,10 +17,13 @@ final class AmbassadorModel: Model, Vapor.Content {
     @Parent(key: "user")
     var user: UserModel
 
-    @Parent(key: "university")
-    var university: UniversityModel
+//    @Parent(key: "university")
+//    var university: UniversityModel
 
     @Children(for: \.$ambassador)
-    var content: [ContentModel]
+    var contents: [ContentModel]
 
+    public init() {
+        
+    }
 }

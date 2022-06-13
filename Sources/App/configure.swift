@@ -16,13 +16,11 @@ public func configure(_ app: Application) throws {
         database: Environment.get("DATABASE_NAME") ?? "vexa"
     ), as: .psql)
 
-    app.migrations.add(CreateUser())
-    app.migrations.add(CreateAmbassador())
-    app.migrations.add(CreateContent())
+    app.migrations.add([CreateUser(), CreateAmbassador(), CreateContent()])
 
     app.views.use(.leaf)
 
-    app.autoMigrate()
+    try app.autoMigrate().wait()
 
     try services(app)
     app.jwt.signers.use(.hs256(key: "VEXA"))
