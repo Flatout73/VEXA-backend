@@ -21,7 +21,6 @@ struct ContentController: RouteCollection {
     }
 
     func fetchAll(req: Request) async throws -> Proto {
-        var response = GeneralResponse()
         let contents = try await ContentModel.query(on: req.db).all()
             .compactMap { try? $0.requestContent() }
             .compactMap {
@@ -29,8 +28,7 @@ struct ContentController: RouteCollection {
             }
         var array = ArrayResponse()
         array.content = contents
-        response.arrayContent = array
-        return Proto(from: try Google_Protobuf_Any(message: response))
+        return Proto(from: array)
     }
 
     func create(req: Request) async throws -> ContentModel {

@@ -17,15 +17,15 @@ extension GeneralResponse {
 }
 
 struct Proto: AsyncResponseEncodable {
-    let response: GeneralResponse
+    let response: SwiftProtobuf.Message
 
-    init(from content: Google_Protobuf_Any) {
-        var response = GeneralResponse()
-        response.content = content
-        self.response = response
+    init(from content: SwiftProtobuf.Message) {
+        self.response = content
     }
 
     func encodeResponse(for request: Request) async throws -> Response {
-        return .init(status: .ok, body: .init(string: try response.jsonString()))
+        var headers = HTTPHeaders()
+        headers.add(name: .contentType, value: "application/json")
+        return .init(status: .ok, headers: headers, body: .init(string: try response.jsonString()))
     }
 }
