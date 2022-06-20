@@ -15,7 +15,7 @@ struct CreateAmbassador: AsyncMigration {
             .id()
             .field("user", .uuid, .references("users", "id", onDelete: .cascade))
             //.field("contents", .array(of: .uuid))
-            //.foreignKey("contents", references: "contents", "id", onDelete: .cascade)
+            .field("university", .uuid, .references("universities", "id", onDelete: .cascade))
             .create()
     }
 

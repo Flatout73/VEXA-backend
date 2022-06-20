@@ -11,6 +11,12 @@ import Protobuf
 import SwiftProtobuf
 
 struct ContentController: RouteCollection {
+    var protoConfig = JSONDecodingOptions()
+
+    init() {
+        protoConfig.ignoreUnknownFields = true
+    }
+
     func boot(routes: RoutesBuilder) throws {
         let contents = routes.grouped("discovery")
         contents.get(use: fetchAll)
@@ -35,9 +41,7 @@ struct ContentController: RouteCollection {
         guard let contentString = req.body.string else {
             throw Abort(.badRequest)
         }
-        var confing = JSONDecodingOptions()
-        confing.ignoreUnknownFields = true
-        let content = try Protobuf.Content(jsonString: contentString, options: confing)
+        let content = try Protobuf.Content(jsonString: contentString, options: protoConfig)
         let vm = try await content.viewModel(for: req.db)
         try await vm.save(on: req.db)
         return vm

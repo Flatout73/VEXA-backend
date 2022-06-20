@@ -6,7 +6,8 @@ import Vapor
 // configures your application
 public func configure(_ app: Application) throws {
     // uncomment to serve files from /Public folder
-    // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
+    app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
+    app.routes.defaultMaxBodySize = "10mb"
 
     if let databaseURL = Environment.get("DATABASE_URL"), var postgresConfig = PostgresConfiguration(url: databaseURL) {
         postgresConfig.tlsConfiguration = .makeClientConfiguration()
@@ -22,7 +23,7 @@ public func configure(_ app: Application) throws {
         ), as: .psql)
     }
 
-    app.migrations.add([CreateUser(), CreateAmbassador(), CreateContent()])
+    app.migrations.add([CreateUniversity(), CreateUser(), CreateAmbassador(), CreateContent()])
 
     app.views.use(.leaf)
 

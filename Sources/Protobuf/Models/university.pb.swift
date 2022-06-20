@@ -36,15 +36,111 @@ public struct University {
 
   public var name: String = String()
 
+  public var photos: [String] = []
+
+  public var tags: [String] = []
+
+  public var applyLink: String = String()
+
+  public var ambassador: [University.Ambassador] = []
+
+  public var videos: [University.Video] = []
+
+  public var studentsCount: Int32 = 0
+
+  public var gpa: Double = 0
+
+  public var exams: String = String()
+
+  public var requirementsDescription: String {
+    get {return _requirementsDescription ?? String()}
+    set {_requirementsDescription = newValue}
+  }
+  /// Returns true if `requirementsDescription` has been explicitly set.
+  public var hasRequirementsDescription: Bool {return self._requirementsDescription != nil}
+  /// Clears the value of `requirementsDescription`. Subsequent reads from it will return its default value.
+  public mutating func clearRequirementsDescription() {self._requirementsDescription = nil}
+
+  public var facties: String {
+    get {return _facties ?? String()}
+    set {_facties = newValue}
+  }
+  /// Returns true if `facties` has been explicitly set.
+  public var hasFacties: Bool {return self._facties != nil}
+  /// Clears the value of `facties`. Subsequent reads from it will return its default value.
+  public mutating func clearFacties() {self._facties = nil}
+
+  public var latitude: Double = 0
+
+  public var longitude: Double = 0
+
+  public var phone: String = String()
+
+  public var address: String = String()
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public struct Ambassador {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    public var id: String = String()
+
+    public var name: String = String()
+
+    public var imageURL: String {
+      get {return _imageURL ?? String()}
+      set {_imageURL = newValue}
+    }
+    /// Returns true if `imageURL` has been explicitly set.
+    public var hasImageURL: Bool {return self._imageURL != nil}
+    /// Clears the value of `imageURL`. Subsequent reads from it will return its default value.
+    public mutating func clearImageURL() {self._imageURL = nil}
+
+    public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    public init() {}
+
+    fileprivate var _imageURL: String? = nil
+  }
+
+  public struct Video {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    public var id: String = String()
+
+    public var imageURL: String {
+      get {return _imageURL ?? String()}
+      set {_imageURL = newValue}
+    }
+    /// Returns true if `imageURL` has been explicitly set.
+    public var hasImageURL: Bool {return self._imageURL != nil}
+    /// Clears the value of `imageURL`. Subsequent reads from it will return its default value.
+    public mutating func clearImageURL() {self._imageURL = nil}
+
+    public var likes: Int32 = 0
+
+    public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    public init() {}
+
+    fileprivate var _imageURL: String? = nil
+  }
 
   public init() {}
 
   fileprivate var _id: String? = nil
+  fileprivate var _requirementsDescription: String? = nil
+  fileprivate var _facties: String? = nil
 }
 
 #if swift(>=5.5) && canImport(_Concurrency)
 extension University: @unchecked Sendable {}
+extension University.Ambassador: @unchecked Sendable {}
+extension University.Video: @unchecked Sendable {}
 #endif  // swift(>=5.5) && canImport(_Concurrency)
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
@@ -54,6 +150,20 @@ extension University: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "id"),
     2: .same(proto: "name"),
+    3: .same(proto: "photos"),
+    4: .same(proto: "tags"),
+    5: .same(proto: "applyLink"),
+    6: .same(proto: "ambassador"),
+    7: .same(proto: "videos"),
+    8: .same(proto: "studentsCount"),
+    9: .same(proto: "gpa"),
+    10: .same(proto: "exams"),
+    11: .same(proto: "requirementsDescription"),
+    12: .same(proto: "facties"),
+    13: .same(proto: "latitude"),
+    14: .same(proto: "longitude"),
+    15: .same(proto: "phone"),
+    16: .same(proto: "address"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -64,6 +174,20 @@ extension University: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularStringField(value: &self._id) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self.name) }()
+      case 3: try { try decoder.decodeRepeatedStringField(value: &self.photos) }()
+      case 4: try { try decoder.decodeRepeatedStringField(value: &self.tags) }()
+      case 5: try { try decoder.decodeSingularStringField(value: &self.applyLink) }()
+      case 6: try { try decoder.decodeRepeatedMessageField(value: &self.ambassador) }()
+      case 7: try { try decoder.decodeRepeatedMessageField(value: &self.videos) }()
+      case 8: try { try decoder.decodeSingularInt32Field(value: &self.studentsCount) }()
+      case 9: try { try decoder.decodeSingularDoubleField(value: &self.gpa) }()
+      case 10: try { try decoder.decodeSingularStringField(value: &self.exams) }()
+      case 11: try { try decoder.decodeSingularStringField(value: &self._requirementsDescription) }()
+      case 12: try { try decoder.decodeSingularStringField(value: &self._facties) }()
+      case 13: try { try decoder.decodeSingularDoubleField(value: &self.latitude) }()
+      case 14: try { try decoder.decodeSingularDoubleField(value: &self.longitude) }()
+      case 15: try { try decoder.decodeSingularStringField(value: &self.phone) }()
+      case 16: try { try decoder.decodeSingularStringField(value: &self.address) }()
       default: break
       }
     }
@@ -80,12 +204,164 @@ extension University: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
     if !self.name.isEmpty {
       try visitor.visitSingularStringField(value: self.name, fieldNumber: 2)
     }
+    if !self.photos.isEmpty {
+      try visitor.visitRepeatedStringField(value: self.photos, fieldNumber: 3)
+    }
+    if !self.tags.isEmpty {
+      try visitor.visitRepeatedStringField(value: self.tags, fieldNumber: 4)
+    }
+    if !self.applyLink.isEmpty {
+      try visitor.visitSingularStringField(value: self.applyLink, fieldNumber: 5)
+    }
+    if !self.ambassador.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.ambassador, fieldNumber: 6)
+    }
+    if !self.videos.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.videos, fieldNumber: 7)
+    }
+    if self.studentsCount != 0 {
+      try visitor.visitSingularInt32Field(value: self.studentsCount, fieldNumber: 8)
+    }
+    if self.gpa != 0 {
+      try visitor.visitSingularDoubleField(value: self.gpa, fieldNumber: 9)
+    }
+    if !self.exams.isEmpty {
+      try visitor.visitSingularStringField(value: self.exams, fieldNumber: 10)
+    }
+    try { if let v = self._requirementsDescription {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 11)
+    } }()
+    try { if let v = self._facties {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 12)
+    } }()
+    if self.latitude != 0 {
+      try visitor.visitSingularDoubleField(value: self.latitude, fieldNumber: 13)
+    }
+    if self.longitude != 0 {
+      try visitor.visitSingularDoubleField(value: self.longitude, fieldNumber: 14)
+    }
+    if !self.phone.isEmpty {
+      try visitor.visitSingularStringField(value: self.phone, fieldNumber: 15)
+    }
+    if !self.address.isEmpty {
+      try visitor.visitSingularStringField(value: self.address, fieldNumber: 16)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   public static func ==(lhs: University, rhs: University) -> Bool {
     if lhs._id != rhs._id {return false}
     if lhs.name != rhs.name {return false}
+    if lhs.photos != rhs.photos {return false}
+    if lhs.tags != rhs.tags {return false}
+    if lhs.applyLink != rhs.applyLink {return false}
+    if lhs.ambassador != rhs.ambassador {return false}
+    if lhs.videos != rhs.videos {return false}
+    if lhs.studentsCount != rhs.studentsCount {return false}
+    if lhs.gpa != rhs.gpa {return false}
+    if lhs.exams != rhs.exams {return false}
+    if lhs._requirementsDescription != rhs._requirementsDescription {return false}
+    if lhs._facties != rhs._facties {return false}
+    if lhs.latitude != rhs.latitude {return false}
+    if lhs.longitude != rhs.longitude {return false}
+    if lhs.phone != rhs.phone {return false}
+    if lhs.address != rhs.address {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension University.Ambassador: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = University.protoMessageName + ".Ambassador"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "id"),
+    2: .same(proto: "name"),
+    3: .same(proto: "imageURL"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.name) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self._imageURL) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.id.isEmpty {
+      try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
+    }
+    if !self.name.isEmpty {
+      try visitor.visitSingularStringField(value: self.name, fieldNumber: 2)
+    }
+    try { if let v = self._imageURL {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 3)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: University.Ambassador, rhs: University.Ambassador) -> Bool {
+    if lhs.id != rhs.id {return false}
+    if lhs.name != rhs.name {return false}
+    if lhs._imageURL != rhs._imageURL {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension University.Video: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = University.protoMessageName + ".Video"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "id"),
+    2: .same(proto: "imageURL"),
+    3: .same(proto: "likes"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self._imageURL) }()
+      case 3: try { try decoder.decodeSingularInt32Field(value: &self.likes) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.id.isEmpty {
+      try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
+    }
+    try { if let v = self._imageURL {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 2)
+    } }()
+    if self.likes != 0 {
+      try visitor.visitSingularInt32Field(value: self.likes, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: University.Video, rhs: University.Video) -> Bool {
+    if lhs.id != rhs.id {return false}
+    if lhs._imageURL != rhs._imageURL {return false}
+    if lhs.likes != rhs.likes {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

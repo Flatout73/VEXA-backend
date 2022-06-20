@@ -8,7 +8,7 @@
 import Vapor
 import Fluent
 
-final class AmbassadorModel: Model, Vapor.Content {
+final class AmbassadorModel: Model {
     static let schema = "ambassadors"
 
     @ID(key: .id)
@@ -17,13 +17,13 @@ final class AmbassadorModel: Model, Vapor.Content {
     @Parent(key: "user")
     var user: UserModel
 
-//    @Parent(key: "university")
-//    var university: UniversityModel
+    @Parent(key: "university")
+    var university: UniversityModel
 
     @Children(for: \.$ambassador)
     var contents: [ContentModel]
+}
 
-    public init() {
-        
-    }
+extension AmbassadorModel: Vapor.Content {
+
 }
