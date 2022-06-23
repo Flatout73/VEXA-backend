@@ -13,6 +13,7 @@ import Protobuf
 struct UniversityController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let universities = routes.grouped("universities")
+        universities.get(use: fetchAll)
         universities.get(":x", use: index)
         universities.post(use: create)
         universities.group(":uniID") { todo in
@@ -20,6 +21,19 @@ struct UniversityController: RouteCollection {
         }
 
         universities.put([":x", "uploadImages"], use: uploadImages)
+    }
+
+    func fetchAll(req: Request) async throws -> Proto {
+        let unis = try await UniversityModel.query(on: req.db).all()
+        print(unis)
+        let contents = unis
+            .compactMap { try? $0.requestUni() }
+            .compactMap {
+                try? Google_Protobuf_Any(message: $0)
+            }
+        var array = ArrayResponse()
+        array.content = contents
+        return Proto(from: array)
     }
 
     func index(req: Request) async throws -> Proto {
@@ -79,64 +93,6 @@ struct UniversityController: RouteCollection {
         }
 
         return uni.photos
-    }
-}
-
-extension UniversityModel {
-    func requestUni() throws -> University {
-        var uni = University()
-        uni.name = name
-        uni.photos = photos
-        uni.address = address
-        uni.applyLink = applyLink
-        uni.exams = exams
-        uni.requirementsDescription = requirementsDescription ?? ""
-        uni.facties = facties ?? ""
-        uni.gpa = gpa
-        uni.studentsCount = Int32(studentsCount)
-        uni.latitude = latitude
-        uni.longitude = longitude
-        uni.phone = phone
-        uni.address = address
-        uni.tags = tags
-        let ambassadors = self.$ambassadors.value?.map { amb -> University.Ambassador in
-            var ambassdor = University.Ambassador()
-            ambassdor.id = amb.id?.uuidString ?? ""
-            ambassdor.name = amb.user.firstName ?? "" + (amb.user.lastName ?? "")
-            ambassdor.imageURL = amb.user.imageURL?.path ?? ""
-            return ambassdor
-        } ?? []
-        uni.ambassador = ambassadors
-        uni.videos = self.$ambassadors.value?.map {
-            let content = $0.contents.first
-            var video = University.Video()
-            video.id = content?.id?.uuidString ?? ""
-            video.imageURL = content?.imageURL ?? ""
-            video.likes = Int32(content?.likes.count ?? 0)
-            return video
-        } ?? []
-        return uni
-    }
-}
-
-extension University {
-    var viewModel: UniversityModel {
-        let uni = UniversityModel()
-        uni.name = name
-        uni.photos = photos
-        uni.address = address
-        uni.applyLink = applyLink
-        uni.exams = exams
-        uni.requirementsDescription = requirementsDescription
-        uni.facties = facties
-        uni.gpa = gpa
-        uni.studentsCount = Int(studentsCount)
-        uni.latitude = latitude
-        uni.longitude = longitude
-        uni.phone = phone
-        uni.address = address
-        uni.tags = tags
-        return uni
     }
 }
 
