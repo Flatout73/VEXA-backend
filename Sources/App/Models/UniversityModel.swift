@@ -8,7 +8,6 @@
 import Fluent
 import Vapor
 import Foundation
-import CloudKit
 
 final class UniversityModel: Model {
     static let schema = "universities"

@@ -74,9 +74,7 @@ struct UniversityController: RouteCollection {
 
         let files = try req.content.decode([File].self)
 
-        let formatter = DateFormatter()
-        formatter.dateFormat = "y-m-d-HH-MM-SS-"
-        let prefix = formatter.string(from: .init())
+        let prefix = fileFormatter.string(from: .init())
 
         for file in files where file.data.readableBytes > 0 {
             let fileName = prefix + file.filename

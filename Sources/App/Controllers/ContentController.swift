@@ -24,6 +24,8 @@ struct ContentController: RouteCollection {
         contents.group(":contentID") { todo in
             todo.delete(use: delete)
         }
+
+        contents.put("uploadVideo", use: uploadVideo)
     }
 
     func fetchAll(req: Request) async throws -> Proto {
@@ -53,6 +55,29 @@ struct ContentController: RouteCollection {
         }
         try await content.delete(on: req.db)
         return .ok
+    }
+
+    func uploadVideo(req: Request) async throws -> String {
+        guard let id = req.parameters.get("x", as: UUID.self) else {
+            throw Abort(.badRequest)
+        }
+        guard let uni = try await UniversityModel.find(id, on: req.db) else {
+            throw Abort(.notFound)
+        }
+
+        let file = try req.content.decode(File.self)
+
+        let prefix = fileFormatter.string(from: .init())
+
+        let fileName = prefix + file.filename
+        let path = req.application.directory.publicDirectory + fileName
+        try await req.fileio.writeFile(file.data, at: path)
+
+        let serverConfig = req.application.http.server.configuration
+        let hostname = serverConfig.hostname
+        let port = serverConfig.port
+
+        return "\(hostname):\(port)/\(fileName)"
     }
 }
 
