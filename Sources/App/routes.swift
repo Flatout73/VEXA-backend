@@ -26,5 +26,7 @@ func routes(_ app: Application) throws {
         try api.register(collection: ContentController())
         try api.register(collection: StudentController())
         try api.register(collection: UniversityController())
+
+        try api.register(collection: VideoController())
     }
 }
