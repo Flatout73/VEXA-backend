@@ -26,6 +26,7 @@ extension UniversityModel {
         uni.phone = phone
         uni.address = address
         uni.tags = tags
+        uni.id = id?.uuidString ?? ""
         let ambassadors = self.$ambassadors.value?.map { amb -> University.Ambassador in
             var ambassdor = University.Ambassador()
             ambassdor.id = amb.id?.uuidString ?? ""

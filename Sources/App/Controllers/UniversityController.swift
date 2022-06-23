@@ -25,7 +25,6 @@ struct UniversityController: RouteCollection {
 
     func fetchAll(req: Request) async throws -> Proto {
         let unis = try await UniversityModel.query(on: req.db).all()
-        print(unis)
         let contents = unis
             .compactMap { try? $0.requestUni() }
             .compactMap {
