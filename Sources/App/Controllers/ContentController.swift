@@ -27,13 +27,11 @@ struct ContentController: RouteCollection {
     }
 
     func fetchAll(req: Request) async throws -> Proto {
-        let contents = try await ContentModel.query(on: req.db).all()
-            .compactMap { try? $0.requestContent() }
-            .compactMap {
-                try? Google_Protobuf_Any(message: $0)
-            }
         var array = ArrayResponse()
-        array.content = contents
+        for content in try await ContentModel.query(on: req.db).all() {
+            let vm = try await content.requestContent(on: req.db)
+            array.content.append(try Google_Protobuf_Any(message: vm))
+        }
         return Proto(from: array)
     }
 
@@ -41,7 +39,7 @@ struct ContentController: RouteCollection {
         guard let contentString = req.body.string else {
             throw Abort(.badRequest)
         }
-        let content = try Protobuf.Content(jsonString: contentString, options: protoConfig)
+        let content = try Protobuf.CreateContent(jsonString: contentString, options: protoConfig)
         let vm = try await content.viewModel(for: req.db)
         try await vm.save(on: req.db)
         return vm
@@ -53,44 +51,5 @@ struct ContentController: RouteCollection {
         }
         try await content.delete(on: req.db)
         return .ok
-    }
-}
-
-extension ContentModel {
-    func requestContent() throws -> Protobuf.Content {
-        var content = Content()
-        content.id = id?.uuidString ?? ""
-        content.title = title ?? ""
-        content.imageURL = imageURL ?? ""
-        content.videoURL = videoURL ?? ""
-        content.likes = likes
-        var ambassador = Ambassador()
-        ambassador.id = self.$ambassador.value?.id?.uuidString ?? ""
-        //ambassador.user = try self.ambassador.user.$id.requestUser()
-        content.ambassador = ambassador
-        return content
-    }
-}
-
-extension Protobuf.Content {
-    func viewModel(for db: Database) async throws -> ContentModel {
-        let content = ContentModel()
-        content.id = UUID(uuidString: id)
-        content.imageURL = imageURL
-        content.videoURL = videoURL
-        content.title = title
-        content.likes = likes
-        //try await content.save(on: db)
-        let user = self.ambassador.user.viewModel
-        try await user.save(on: db)
-        let ambassador = AmbassadorModel()
-        ambassador.$user.id = user.id!
-        try await ambassador.save(on: db)
-        try await ambassador.$contents.create(content, on: db)
-//        let uni = UniversityModel()
-//        uni.name = self.ambassador.university.name
-//        try await uni.$ambassadors.create(ambassador, on: db)
-
-        return content
     }
 }

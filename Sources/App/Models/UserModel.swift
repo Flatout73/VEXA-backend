@@ -2,7 +2,14 @@ import Fluent
 import Vapor
 import Foundation
 
+enum UserType: String, Codable {
+    case ambassador
+    case student
+    case admin
+}
+
 final class UserModel: Content, Model, Authenticatable {
+
     static let schema = "users"
     
     @ID(key: .id)
@@ -15,12 +22,12 @@ final class UserModel: Content, Model, Authenticatable {
     @Field(key: "email")
     var email: String?
     @OptionalField(key: "imageURL")
-    var imageURL: URL?
+    var imageURL: String?
     @OptionalField(key: "password")
     var password: String?
 
-    @Field(key: "isAdmin")
-    var isAdmin: Bool
+    @Enum(key: "userType")
+    var userType: UserType
     @Field(key: "isEmailVerified")
     var isEmailVerified: Bool
 
@@ -29,14 +36,14 @@ final class UserModel: Content, Model, Authenticatable {
     }
 
     init(userID: UUID? = nil, firstName: String, lastName: String, email: String,
-         password: String?, isAdmin: Bool = false,
+         password: String?, userType: UserType = .ambassador,
          isEmailVerified: Bool = false) {
         self.id = userID
         self.firstName = firstName
         self.lastName = lastName
         self.email = email
         self.password = password
-        self.isAdmin = isAdmin
+        self.userType = userType
         self.isEmailVerified = isEmailVerified
     }
 }

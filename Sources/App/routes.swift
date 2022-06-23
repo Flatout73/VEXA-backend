@@ -28,5 +28,6 @@ func routes(_ app: Application) throws {
         try api.register(collection: UniversityController())
 
         try api.register(collection: VideoController())
+        try api.register(collection: AmbassadorController())
     }
 }

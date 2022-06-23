@@ -30,5 +30,6 @@ final class ContentModel: Model, Vapor.Content {
 
     init() {
         self.approved = false
+        self.likes = []
     }
 }

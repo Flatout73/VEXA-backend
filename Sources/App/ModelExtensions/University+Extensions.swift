@@ -31,10 +31,10 @@ extension UniversityModel {
             var ambassdor = University.Ambassador()
             ambassdor.id = amb.id?.uuidString ?? ""
             ambassdor.name = amb.user.firstName ?? "" + (amb.user.lastName ?? "")
-            ambassdor.imageURL = amb.user.imageURL?.path ?? ""
+            ambassdor.imageURL = amb.user.imageURL ?? ""
             return ambassdor
         } ?? []
-        uni.ambassador = ambassadors
+        uni.ambassadors = ambassadors
         uni.videos = self.$ambassadors.value?.map {
             let content = $0.contents.first
             var video = University.Video()

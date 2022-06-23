@@ -42,7 +42,7 @@ public struct University {
 
   public var applyLink: String = String()
 
-  public var ambassador: [University.Ambassador] = []
+  public var ambassadors: [University.Ambassador] = []
 
   public var videos: [University.Video] = []
 
@@ -153,7 +153,7 @@ extension University: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
     3: .same(proto: "photos"),
     4: .same(proto: "tags"),
     5: .same(proto: "applyLink"),
-    6: .same(proto: "ambassador"),
+    6: .same(proto: "ambassadors"),
     7: .same(proto: "videos"),
     8: .same(proto: "studentsCount"),
     9: .same(proto: "gpa"),
@@ -177,7 +177,7 @@ extension University: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
       case 3: try { try decoder.decodeRepeatedStringField(value: &self.photos) }()
       case 4: try { try decoder.decodeRepeatedStringField(value: &self.tags) }()
       case 5: try { try decoder.decodeSingularStringField(value: &self.applyLink) }()
-      case 6: try { try decoder.decodeRepeatedMessageField(value: &self.ambassador) }()
+      case 6: try { try decoder.decodeRepeatedMessageField(value: &self.ambassadors) }()
       case 7: try { try decoder.decodeRepeatedMessageField(value: &self.videos) }()
       case 8: try { try decoder.decodeSingularInt32Field(value: &self.studentsCount) }()
       case 9: try { try decoder.decodeSingularDoubleField(value: &self.gpa) }()
@@ -213,8 +213,8 @@ extension University: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
     if !self.applyLink.isEmpty {
       try visitor.visitSingularStringField(value: self.applyLink, fieldNumber: 5)
     }
-    if !self.ambassador.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.ambassador, fieldNumber: 6)
+    if !self.ambassadors.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.ambassadors, fieldNumber: 6)
     }
     if !self.videos.isEmpty {
       try visitor.visitRepeatedMessageField(value: self.videos, fieldNumber: 7)
@@ -255,7 +255,7 @@ extension University: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
     if lhs.photos != rhs.photos {return false}
     if lhs.tags != rhs.tags {return false}
     if lhs.applyLink != rhs.applyLink {return false}
-    if lhs.ambassador != rhs.ambassador {return false}
+    if lhs.ambassadors != rhs.ambassadors {return false}
     if lhs.videos != rhs.videos {return false}
     if lhs.studentsCount != rhs.studentsCount {return false}
     if lhs.gpa != rhs.gpa {return false}
