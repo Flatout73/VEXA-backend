@@ -20,7 +20,9 @@ extension AmbassadorModel {
 extension CreateAmbassadorRequest {
     func model(for db: Database) async throws -> AmbassadorModel {
         let ambassador = AmbassadorModel()
-        ambassador.$university.id = UUID(self.universityID) ?? UUID()
+        if let id = UUID(self.universityID) {
+            ambassador.$university.id = id
+        }
 
         let user = self.user.viewModel
         user.userType = .ambassador

@@ -60,7 +60,7 @@ struct VideoController: RouteCollection {
             let serverConfig = req.application.http.server.configuration
             let hostname = serverConfig.hostname
             let port = serverConfig.port
-            return "\(hostname):\(port)/video/\(fileName)"
+            return "\(hostname):\(port)/api/video/\(fileName)"
         }
 
     //    let r = Response(body: .init(stream: { writer in
