@@ -30,4 +30,9 @@ func routes(_ app: Application) throws {
         try api.register(collection: VideoController())
         try api.register(collection: AmbassadorController())
     }
+
+    let chatSystem = ChatSystem(eventLoop: app.eventLoopGroup.next())
+    app.webSocket("chat") { req, ws in
+            chatSystem.connect(ws)
+        }
 }
