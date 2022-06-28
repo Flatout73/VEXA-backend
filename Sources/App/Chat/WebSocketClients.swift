@@ -10,7 +10,7 @@ import Vapor
 
 open class WebsocketClients {
     var eventLoop: EventLoop
-    var storage: [UUID: WebSocketClient]
+    var storage: [UUID: WebSocketClient] = [:]
 
     var active: [WebSocketClient] {
         self.storage.values.filter { !$0.socket.isClosed }

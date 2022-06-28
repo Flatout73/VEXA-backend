@@ -7,14 +7,12 @@
 
 import Foundation
 import Vapor
-
-struct WebsocketMessage<T: Codable>: Codable {
-    let client: UUID
-    let data: T
-}
+import Protobuf
 
 extension ByteBuffer {
-    func decodeWebsocketMessage<T: Codable>(_ type: T.Type) -> WebsocketMessage<T>? {
-        try? JSONDecoder().decode(WebsocketMessage<T>.self, from: self)
+    func decodeWebsocketMessage() throws -> WebSocketMessage {
+        let data = Data(buffer: self)
+        let webSocketMessage = try WebSocketMessage(jsonUTF8Data: data)
+        return webSocketMessage
     }
 }
