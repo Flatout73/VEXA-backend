@@ -33,6 +33,6 @@ func routes(_ app: Application) throws {
 
     let chatSystem = ChatSystem(eventLoop: app.eventLoopGroup.next())
     app.webSocket("chat") { req, ws in
-            chatSystem.connect(ws)
-        }
+        chatSystem.connect(ws, database: req.db)
+    }
 }

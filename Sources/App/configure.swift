@@ -23,7 +23,7 @@ public func configure(_ app: Application) throws {
         ), as: .psql)
     }
 
-    app.migrations.add([CreateUniversity(), CreateUser(), CreateAmbassador(), CreateContent()])
+    app.migrations.add([CreateUniversity(), CreateUser(), CreateAmbassador(), CreateContent(), CreateChat()])
 
     app.views.use(.leaf)
 

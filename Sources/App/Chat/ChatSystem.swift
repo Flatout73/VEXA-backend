@@ -7,6 +7,7 @@
 
 import Foundation
 import Vapor
+import FluentKit
 
 class ChatSystem {
     var clients: WebsocketClients
@@ -15,7 +16,7 @@ class ChatSystem {
         self.clients = WebsocketClients(eventLoop: eventLoop)
     }
 
-    func connect(_ ws: WebSocket) {
+    func connect(_ ws: WebSocket, database: Database) {
         ws.onBinary { [unowned self] ws, buffer in
             do {
                 let message = try buffer.decodeWebsocketMessage()
@@ -26,7 +27,10 @@ class ChatSystem {
                 case .textMessage(let text):
                     if let client = self.clients.find(UUID(message.client)!) {
                         print("MSG", text)
-                        client.messages.append(text.model)
+                        let chatMessage = text.model
+                        // TODO: Add user for chat message by id
+                        try await chatMessage.save(on: database)
+                        client.messages.append(chatMessage)
                     }
                 default:
                     print("Smth in socket")
