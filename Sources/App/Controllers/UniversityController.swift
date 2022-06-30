@@ -20,7 +20,7 @@ struct UniversityController: RouteCollection {
             todo.delete(use: delete)
         }
 
-        universities.put([":x", "uploadImages"], use: uploadImages)
+        universities.put([":x", "addImages"], use: addImages)
     }
 
     func fetchAll(req: Request) async throws -> Proto {
@@ -63,7 +63,7 @@ struct UniversityController: RouteCollection {
         return .ok
     }
 
-    func uploadImages(req: Request) async throws -> [String] {
+    func addImages(req: Request) async throws -> UniversityModel {
         guard let id = req.parameters.get("x", as: UUID.self) else {
             throw Abort(.badRequest)
         }
@@ -71,25 +71,17 @@ struct UniversityController: RouteCollection {
             throw Abort(.notFound)
         }
 
-        let files = try req.content.decode([File].self)
+        let files = try req.content.decode([String].self)
 
         let prefix = fileFormatter.string(from: .init())
 
-        for file in files where file.data.readableBytes > 0 {
-            let fileName = prefix + file.filename
-            let path = req.application.directory.publicDirectory + fileName
-            //let isImage = ["png", "jpeg", "jpg", "gif"].contains(file.extension?.lowercased())
-            try await req.fileio.writeFile(file.data, at: path)
-
-            let serverConfig = req.application.http.server.configuration
-            let hostname = serverConfig.hostname
-            let port = serverConfig.port
-
-            uni.photos.append("\(hostname):\(port)/\(fileName)")
-            try await uni.update(on: req.db)
+        for file in files {
+            uni.photos.append(file)
         }
 
-        return uni.photos
+        try await uni.update(on: req.db)
+
+        return uni
     }
 }
 

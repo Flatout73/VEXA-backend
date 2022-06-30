@@ -23,11 +23,14 @@ func routes(_ app: Application) throws {
         // Authentication
         try api.register(collection: AuthenticationController())
 
+        try api.register(collection: VideoController())
+        try api.register(collection: ImageController())
+
         try api.register(collection: ContentController())
         try api.register(collection: StudentController())
         try api.register(collection: UniversityController())
 
-        try api.register(collection: VideoController())
+        try api.register(collection: AdminController())
         try api.register(collection: AmbassadorController())
     }
 
