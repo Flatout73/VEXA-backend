@@ -41,9 +41,8 @@ struct AuthenticationController: RouteCollection {
         guard let content = req.body.string else {
             throw AuthenticationError.invalidEmailOrPassword
         }
-//        guard registerRequest.password == registerRequest.confirmPassword else {
-//            throw AuthenticationError.passwordsDontMatch
-//        }
+
+        
         var user = try User(jsonString: content)
 
         let hash = try req.password
