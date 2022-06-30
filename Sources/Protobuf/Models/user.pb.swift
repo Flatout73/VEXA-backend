@@ -49,7 +49,42 @@ public struct User {
   /// Clears the value of `password`. Subsequent reads from it will return its default value.
   public mutating func clearPassword() {self._password = nil}
 
+  public var userType: User.UserType = .student
+
+  public var deviceIds: [String] = []
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public enum UserType: SwiftProtobuf.Enum {
+    public typealias RawValue = Int
+    case student // = 0
+    case ambassador // = 1
+    case admin // = 2
+    case UNRECOGNIZED(Int)
+
+    public init() {
+      self = .student
+    }
+
+    public init?(rawValue: Int) {
+      switch rawValue {
+      case 0: self = .student
+      case 1: self = .ambassador
+      case 2: self = .admin
+      default: self = .UNRECOGNIZED(rawValue)
+      }
+    }
+
+    public var rawValue: Int {
+      switch self {
+      case .student: return 0
+      case .ambassador: return 1
+      case .admin: return 2
+      case .UNRECOGNIZED(let i): return i
+      }
+    }
+
+  }
 
   public init() {}
 
@@ -57,8 +92,22 @@ public struct User {
   fileprivate var _password: String? = nil
 }
 
+#if swift(>=4.2)
+
+extension User.UserType: CaseIterable {
+  // The compiler won't synthesize support with the UNRECOGNIZED case.
+  public static var allCases: [User.UserType] = [
+    .student,
+    .ambassador,
+    .admin,
+  ]
+}
+
+#endif  // swift(>=4.2)
+
 #if swift(>=5.5) && canImport(_Concurrency)
 extension User: @unchecked Sendable {}
+extension User.UserType: @unchecked Sendable {}
 #endif  // swift(>=5.5) && canImport(_Concurrency)
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
@@ -71,6 +120,8 @@ extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
     3: .same(proto: "lastName"),
     4: .same(proto: "email"),
     5: .same(proto: "password"),
+    6: .same(proto: "userType"),
+    7: .same(proto: "deviceIDs"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -84,6 +135,8 @@ extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
       case 3: try { try decoder.decodeSingularStringField(value: &self.lastName) }()
       case 4: try { try decoder.decodeSingularStringField(value: &self.email) }()
       case 5: try { try decoder.decodeSingularStringField(value: &self._password) }()
+      case 6: try { try decoder.decodeSingularEnumField(value: &self.userType) }()
+      case 7: try { try decoder.decodeRepeatedStringField(value: &self.deviceIds) }()
       default: break
       }
     }
@@ -109,6 +162,12 @@ extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
     try { if let v = self._password {
       try visitor.visitSingularStringField(value: v, fieldNumber: 5)
     } }()
+    if self.userType != .student {
+      try visitor.visitSingularEnumField(value: self.userType, fieldNumber: 6)
+    }
+    if !self.deviceIds.isEmpty {
+      try visitor.visitRepeatedStringField(value: self.deviceIds, fieldNumber: 7)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -118,7 +177,17 @@ extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
     if lhs.lastName != rhs.lastName {return false}
     if lhs.email != rhs.email {return false}
     if lhs._password != rhs._password {return false}
+    if lhs.userType != rhs.userType {return false}
+    if lhs.deviceIds != rhs.deviceIds {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
+}
+
+extension User.UserType: SwiftProtobuf._ProtoNameProviding {
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    0: .same(proto: "STUDENT"),
+    1: .same(proto: "AMBASSADOR"),
+    2: .same(proto: "ADMIN"),
+  ]
 }

@@ -20,7 +20,7 @@ extension ContentModel {
         content.likes = likes
         try await self.$ambassador.load(on: database)
         try await self.ambassador.$user.load(on: database)
-        content.ambassador = try self.$ambassador.wrappedValue.requestAmbassador()
+        content.ambassador = try await self.$ambassador.wrappedValue.requestAmbassador(for: database)
         return content
     }
 }

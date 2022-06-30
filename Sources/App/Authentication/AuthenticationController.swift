@@ -17,8 +17,8 @@ struct AuthenticationController: RouteCollection {
             auth.post("login", use: login)
 
             auth.group("email-verification") { emailVerificationRoutes in
-                //emailVerificationRoutes.post("", use: sendEmailVerification)
-                emailVerificationRoutes.get("", use: verifyEmail)
+                emailVerificationRoutes.post(use: sendEmailVerification)
+                emailVerificationRoutes.get(use: verifyEmail)
             }
 
             auth.group("reset-password") { resetPasswordRoutes in
@@ -36,7 +36,7 @@ struct AuthenticationController: RouteCollection {
         }
     }
 
-    private func register(_ req: Request) async throws -> HTTPStatus {
+    private func register(_ req: Request) async throws -> UserModel {
 //        let user = try req.auth.require(UserModel.self)
 //        let token = try user.generateToken()
 //        try await token.save(on: req.db)
@@ -55,12 +55,13 @@ struct AuthenticationController: RouteCollection {
             .hash(user.password)
         user.password = hash
 
-        let createdUser = try await req.students
-            .create(user.viewModel)
+        let createdUser = try await user.model(for: req.db)
+        try await req.users
+            .create(createdUser)
 
-        //try req.emailVerifier.verify(for: createdUser)
+        try await req.emailVerifier.verify(for: createdUser)
 
-        return .created
+        return createdUser
     }
 
     private func login(_ req: Request) async throws -> Proto {
@@ -70,7 +71,7 @@ struct AuthenticationController: RouteCollection {
         }
 
         let loginRequest = try LoginRequest(jsonString: content)
-        guard let user = try await req.students
+        guard let user = try await req.users
             .find(email: loginRequest.email) else {
             throw AuthenticationError.invalidEmailOrPassword
         }
@@ -92,7 +93,7 @@ struct AuthenticationController: RouteCollection {
             .create(refreshToken)
 
         var response = Protobuf.LoginResponse()
-        response.user = try user.requestUser()
+        response.user = try await user.requestUser(for: req.db)
         response.accessToken = try req.jwt.sign(SessionJWTToken(user: user))
         response.refreshToken = token
         return Proto(from: try Google_Protobuf_Any(message: response))
@@ -115,7 +116,7 @@ struct AuthenticationController: RouteCollection {
             .delete(refreshToken)
 
         if refreshToken.expiresAt > Date() {
-            guard let user = try await req.students.find(id: refreshToken.$user.id) else {
+            guard let user = try await req.users.find(id: refreshToken.$user.id) else {
                 throw AuthenticationError.refreshTokenOrUserNotFound
             }
             let token = req.random.generate(bits: 256)
@@ -127,7 +128,7 @@ struct AuthenticationController: RouteCollection {
             var response = Protobuf.LoginResponse()
             response.refreshToken = token
             response.accessToken = accessToken
-            response.user = try user.requestUser()
+            response.user = try await user.requestUser(for: req.db)
             return Proto(from: try Google_Protobuf_Any(message: response))
         } else {
             throw AuthenticationError.refreshTokenHasExpired
@@ -144,9 +145,7 @@ struct AuthenticationController: RouteCollection {
 //    }
 
     private func verifyEmail(_ req: Request) throws -> EventLoopFuture<HTTPStatus> {
-        let token = try req.query.get(String.self, at: "token")
-
-        let hashedToken = SHA256.hash(token)
+        let hashedToken = try req.query.get(String.self, at: "token")
 
         return req.emailTokens
             .find(token: hashedToken)
@@ -155,7 +154,7 @@ struct AuthenticationController: RouteCollection {
             .guard({ (emailToken: EmailToken) -> Bool in emailToken.expiresAt > Date() },
                    else: AuthenticationError.emailTokenHasExpired)
             .flatMapThrowing {
-                req.students.set(\.$isEmailVerified, to: true, for: $0.$user.id)
+                req.users.set(\.$isEmailVerified, to: true, for: $0.$user.id)
         }
         .transform(to: .ok)
     }
@@ -167,7 +166,7 @@ struct AuthenticationController: RouteCollection {
 
         let resetPasswordRequest = try ResetPasswordRequest(jsonString: content)
 
-        if let user = try await req.students
+        if let user = try await req.users
             .find(email: resetPasswordRequest.email){
             return .ok
         } else {
@@ -229,19 +228,23 @@ struct AuthenticationController: RouteCollection {
 //        .transform(to: .noContent)
 //    }
 //
-//    private func sendEmailVerification(_ req: Request) throws -> EventLoopFuture<HTTPStatus> {
-//        let content = try req.content.decode(SendEmailVerificationRequest.self)
-//
-//        return req.users
-//            .find(email: content.email)
-//            .flatMap {
-//                guard let user = $0, !user.isEmailVerified else {
-//                    return req.eventLoop.makeSucceededFuture(.noContent)
-//                }
-//
-//                return req.emailVerifier
-//                    .verify(for: user)
-//                    .transform(to: .noContent)
-//        }
-//    }
+    private func sendEmailVerification(_ req: Request) async throws -> EmailToken {
+        guard let content = req.body.string else {
+            throw AuthenticationError.invalidEmailOrPassword
+        }
+
+        let emailRequest = try EmailVerificationRequest(jsonString: content)
+
+        guard let user = try await req.users
+            .find(email: emailRequest.email) else {
+            throw AuthenticationError.userNotFound
+        }
+
+        guard !user.isEmailVerified else {
+            throw AuthenticationError.userNotFound
+        }
+
+        return try await req.emailVerifier
+            .verify(for: user)
+    }
 }

@@ -23,15 +23,25 @@ public func configure(_ app: Application) throws {
         ), as: .psql)
     }
 
-    app.migrations.add([CreateUniversity(), CreateUser(), CreateAmbassador(), CreateContent(), CreateChat()])
-
     app.views.use(.leaf)
 
-    try app.autoMigrate().wait()
+    // MARK: Mailgun
+//    app.mailgun.configuration = .environment
+//    app.mailgun.defaultDomain = .sandbox
+
+    // MARK: App Config
+    app.config = .environment
 
     try services(app)
     app.jwt.signers.use(.hs256(key: "VEXA"))
 
     // register routes
     try routes(app)
+    try migrations(app)
+    try queues(app)
+
+    if app.environment == .development {
+        try app.autoMigrate().wait()
+        try app.queues.startInProcessJobs()
+    }
 }

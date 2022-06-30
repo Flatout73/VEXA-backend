@@ -23,7 +23,7 @@ struct DatabaseUserRepository: UserRepository, DatabaseRepository {
     let database: Database
 
     func create(_ user: UserModel) async throws {
-        return try await user.create(on: database)
+        try await user.create(on: database)
     }
 
     func delete(id: UUID) async throws {

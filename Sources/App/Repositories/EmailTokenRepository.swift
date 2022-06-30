@@ -10,9 +10,9 @@ import Fluent
 
 protocol EmailTokenRepository: Repository {
     func find(token: String) -> EventLoopFuture<EmailToken?>
-    func create(_ emailToken: EmailToken) -> EventLoopFuture<Void>
+    func create(_ emailToken: EmailToken) async throws
     func delete(_ emailToken: EmailToken) -> EventLoopFuture<Void>
-    func find(userID: UUID) -> EventLoopFuture<EmailToken?>
+    func find(userID: UUID) async throws -> EmailToken?
 }
 
 struct DatabaseEmailTokenRepository: EmailTokenRepository, DatabaseRepository {
@@ -24,16 +24,16 @@ struct DatabaseEmailTokenRepository: EmailTokenRepository, DatabaseRepository {
             .first()
     }
 
-    func create(_ emailToken: EmailToken) -> EventLoopFuture<Void> {
-        return emailToken.create(on: database)
+    func create(_ emailToken: EmailToken) async throws {
+        try await emailToken.create(on: database)
     }
 
     func delete(_ emailToken: EmailToken) -> EventLoopFuture<Void> {
         return emailToken.delete(on: database)
     }
 
-    func find(userID: UUID) -> EventLoopFuture<EmailToken?> {
-        EmailToken.query(on: database)
+    func find(userID: UUID) async throws -> EmailToken? {
+        return try await EmailToken.query(on: database)
             .filter(\.$user.$id == userID)
             .first()
     }

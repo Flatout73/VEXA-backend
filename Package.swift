@@ -17,6 +17,11 @@ let package = Package(
         .package(url: "https://github.com/vapor/leaf.git", from: "4.0.0"),
         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.6.0"),
         .package(url: "https://github.com/vapor/jwt.git", from: "4.0.0"),
+        .package(url: "https://github.com/vapor/queues.git", from: "1.0.0"),
+        .package(url: "https://github.com/vapor/queues-redis-driver.git", from: "1.0.0-rc.1"),
+
+        // Mailgun
+        .package(url: "https://github.com/vapor-community/mailgun.git", from: "5.0.0")
     ],
     targets: [
         .target(name: "Protobuf", dependencies: [
@@ -30,6 +35,8 @@ let package = Package(
                 .product(name: "Leaf", package: "leaf"),
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "JWT", package: "jwt"),
+                .product(name: "QueuesRedisDriver", package: "queues-redis-driver"),
+                .product(name: "Mailgun", package: "mailgun"),
                 "Protobuf"
             ],
             swiftSettings: [

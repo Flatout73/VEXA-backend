@@ -20,7 +20,7 @@ final class UserModel: Content, Model, Authenticatable {
     @Field(key: "lastName")
     var lastName: String?
     @Field(key: "email")
-    var email: String?
+    var email: String
     @OptionalField(key: "imageURL")
     var imageURL: String?
     @OptionalField(key: "password")
@@ -31,12 +31,15 @@ final class UserModel: Content, Model, Authenticatable {
     @Field(key: "isEmailVerified")
     var isEmailVerified: Bool
 
+    @Children(for: \DeviceModel.$user)
+    var devices: [DeviceModel]
+
     init() {
 
     }
 
     init(userID: UUID? = nil, firstName: String, lastName: String, email: String,
-         password: String?, userType: UserType = .ambassador,
+         password: String?, userType: UserType = .student,
          isEmailVerified: Bool = false) {
         self.id = userID
         self.firstName = firstName

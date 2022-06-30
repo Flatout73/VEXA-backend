@@ -10,9 +10,9 @@ import Fluent
 import Foundation
 
 extension AmbassadorModel {
-    func requestAmbassador() throws -> Ambassador {
+    func requestAmbassador(for db: Database) async throws -> Ambassador {
         var ambassador = Ambassador()
-        ambassador.user = try self.$user.wrappedValue.requestUser()
+        ambassador.user = try await self.$user.wrappedValue.requestUser(for: db)
         return ambassador
     }
 }
@@ -24,7 +24,7 @@ extension CreateAmbassadorRequest {
             ambassador.$university.id = id
         }
 
-        let user = self.user.viewModel
+        let user = try await self.user.model(for: db)
         user.userType = .ambassador
         try await user.save(on: db)
         if let id = user.id {

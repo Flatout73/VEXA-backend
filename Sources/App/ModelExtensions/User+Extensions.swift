@@ -12,13 +12,15 @@ import Protobuf
 
 
 extension UserModel {
-    func requestUser() throws -> User {
+    func requestUser(for database: Database) async throws -> User {
         var user = User()
         if let id = self.id?.uuidString {
             user.id = id
             user.firstName = self.firstName ?? ""
             user.lastName = self.lastName ?? ""
             user.email = self.email ?? ""
+            try await self.$devices.load(on: database)
+            user.deviceIds = self.devices.compactMap({ $0.id?.uuidString })
             return user
         } else {
             throw AuthenticationError.userNotFound
@@ -27,11 +29,37 @@ extension UserModel {
 }
 
 extension User {
-    var viewModel: UserModel {
+    func model(for database: Database) async throws -> UserModel {
         let user = UserModel(firstName: self.firstName,
                              lastName: self.lastName,
                              email: self.email,
                              password: self.password)
+        let devices: [DeviceModel] = self.deviceIds.map {
+            let device = DeviceModel()
+            device.id = UUID($0)
+            device.$user.id = user.id!
+            return device
+        }
+
+        for device in devices {
+            try await device.save(on: database)
+        }
+
         return user
+    }
+}
+
+extension User.UserType {
+    var model: UserType {
+        switch self {
+        case .admin:
+            return .admin
+        case .ambassador:
+            return .ambassador
+        case .student:
+            return .student
+        default:
+            return .student
+        }
     }
 }

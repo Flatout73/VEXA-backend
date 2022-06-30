@@ -18,7 +18,7 @@ struct AmbassadorController: RouteCollection {
             throw Abort(.badRequest)
         }
 
-        guard let user = try await AmbassadorModel.find(id, on: req.db)?.requestAmbassador() else {
+        guard let user = try await AmbassadorModel.find(id, on: req.db)?.requestAmbassador(for: req.db) else {
             throw Abort(.notFound)
         }
         return Proto(from: try Google_Protobuf_Any(message: user))
