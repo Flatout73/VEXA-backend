@@ -24,8 +24,8 @@ final class StudentModel: Model, Vapor.Content {
     var nativeLanguage: String?
     @OptionalField(key: "otherLanguages")
     var otherLanguages: [String]?
-    @OptionalField(key: "enrolmentYear")
-    var enrolmentYear: Int?
+    @OptionalField(key: "enrollmentYear")
+    var enrollmentYear: Int32?
     @OptionalField(key: "bio")
     var bio: String?
 

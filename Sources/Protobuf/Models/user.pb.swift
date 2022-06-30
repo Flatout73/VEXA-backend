@@ -53,6 +53,15 @@ public struct User {
 
   public var deviceIds: [String] = []
 
+  public var imageURL: String {
+    get {return _imageURL ?? String()}
+    set {_imageURL = newValue}
+  }
+  /// Returns true if `imageURL` has been explicitly set.
+  public var hasImageURL: Bool {return self._imageURL != nil}
+  /// Clears the value of `imageURL`. Subsequent reads from it will return its default value.
+  public mutating func clearImageURL() {self._imageURL = nil}
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum UserType: SwiftProtobuf.Enum {
@@ -90,6 +99,7 @@ public struct User {
 
   fileprivate var _id: String? = nil
   fileprivate var _password: String? = nil
+  fileprivate var _imageURL: String? = nil
 }
 
 #if swift(>=4.2)
@@ -122,6 +132,7 @@ extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
     5: .same(proto: "password"),
     6: .same(proto: "userType"),
     7: .same(proto: "deviceIDs"),
+    8: .same(proto: "imageURL"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -137,6 +148,7 @@ extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
       case 5: try { try decoder.decodeSingularStringField(value: &self._password) }()
       case 6: try { try decoder.decodeSingularEnumField(value: &self.userType) }()
       case 7: try { try decoder.decodeRepeatedStringField(value: &self.deviceIds) }()
+      case 8: try { try decoder.decodeSingularStringField(value: &self._imageURL) }()
       default: break
       }
     }
@@ -168,6 +180,9 @@ extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
     if !self.deviceIds.isEmpty {
       try visitor.visitRepeatedStringField(value: self.deviceIds, fieldNumber: 7)
     }
+    try { if let v = self._imageURL {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 8)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -179,6 +194,7 @@ extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
     if lhs._password != rhs._password {return false}
     if lhs.userType != rhs.userType {return false}
     if lhs.deviceIds != rhs.deviceIds {return false}
+    if lhs._imageURL != rhs._imageURL {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

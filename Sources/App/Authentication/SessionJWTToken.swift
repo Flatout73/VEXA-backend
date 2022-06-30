@@ -15,16 +15,16 @@ struct SessionJWTToken: JWTPayload, Authenticatable {
     // Token Data
     var expiration: ExpirationClaim
 
-    var userId: UUID
+    var userID: UUID
     //var email: String
 
     init(userId: UUID) {
-        self.userId = userId
+        self.userID = userId
         self.expiration = ExpirationClaim(value: Date().addingTimeInterval(expirationTime))
     }
 
     init(user: UserModel) throws {
-        self.userId = try user.requireID()
+        self.userID = try user.requireID()
         self.expiration = ExpirationClaim(value: Date().addingTimeInterval(expirationTime))
     }
 

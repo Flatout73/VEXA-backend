@@ -34,6 +34,26 @@ public struct Student {
   /// Clears the value of `user`. Subsequent reads from it will return its default value.
   public mutating func clearUser() {self._user = nil}
 
+  public var nativeLanguage: String {
+    get {return _nativeLanguage ?? String()}
+    set {_nativeLanguage = newValue}
+  }
+  /// Returns true if `nativeLanguage` has been explicitly set.
+  public var hasNativeLanguage: Bool {return self._nativeLanguage != nil}
+  /// Clears the value of `nativeLanguage`. Subsequent reads from it will return its default value.
+  public mutating func clearNativeLanguage() {self._nativeLanguage = nil}
+
+  public var otherLanguages: [String] = []
+
+  public var enrollmentYear: Int32 {
+    get {return _enrollmentYear ?? 0}
+    set {_enrollmentYear = newValue}
+  }
+  /// Returns true if `enrollmentYear` has been explicitly set.
+  public var hasEnrollmentYear: Bool {return self._enrollmentYear != nil}
+  /// Clears the value of `enrollmentYear`. Subsequent reads from it will return its default value.
+  public mutating func clearEnrollmentYear() {self._enrollmentYear = nil}
+
   public var currentCountry: String {
     get {return _currentCountry ?? String()}
     set {_currentCountry = newValue}
@@ -57,6 +77,8 @@ public struct Student {
   public init() {}
 
   fileprivate var _user: User? = nil
+  fileprivate var _nativeLanguage: String? = nil
+  fileprivate var _enrollmentYear: Int32? = nil
   fileprivate var _currentCountry: String? = nil
   fileprivate var _bio: String? = nil
 }
@@ -71,6 +93,9 @@ extension Student: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
   public static let protoMessageName: String = "Student"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "user"),
+    2: .same(proto: "nativeLanguage"),
+    3: .same(proto: "otherLanguages"),
+    4: .same(proto: "enrollmentYear"),
     5: .same(proto: "currentCountry"),
     6: .same(proto: "bio"),
   ]
@@ -82,6 +107,9 @@ extension Student: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularMessageField(value: &self._user) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self._nativeLanguage) }()
+      case 3: try { try decoder.decodeRepeatedStringField(value: &self.otherLanguages) }()
+      case 4: try { try decoder.decodeSingularInt32Field(value: &self._enrollmentYear) }()
       case 5: try { try decoder.decodeSingularStringField(value: &self._currentCountry) }()
       case 6: try { try decoder.decodeSingularStringField(value: &self._bio) }()
       default: break
@@ -97,6 +125,15 @@ extension Student: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
     try { if let v = self._user {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
     } }()
+    try { if let v = self._nativeLanguage {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 2)
+    } }()
+    if !self.otherLanguages.isEmpty {
+      try visitor.visitRepeatedStringField(value: self.otherLanguages, fieldNumber: 3)
+    }
+    try { if let v = self._enrollmentYear {
+      try visitor.visitSingularInt32Field(value: v, fieldNumber: 4)
+    } }()
     try { if let v = self._currentCountry {
       try visitor.visitSingularStringField(value: v, fieldNumber: 5)
     } }()
@@ -108,6 +145,9 @@ extension Student: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
 
   public static func ==(lhs: Student, rhs: Student) -> Bool {
     if lhs._user != rhs._user {return false}
+    if lhs._nativeLanguage != rhs._nativeLanguage {return false}
+    if lhs.otherLanguages != rhs.otherLanguages {return false}
+    if lhs._enrollmentYear != rhs._enrollmentYear {return false}
     if lhs._currentCountry != rhs._currentCountry {return false}
     if lhs._bio != rhs._bio {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}

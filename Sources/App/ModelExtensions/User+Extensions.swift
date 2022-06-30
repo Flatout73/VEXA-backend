@@ -18,7 +18,9 @@ extension UserModel {
             user.id = id
             user.firstName = self.firstName ?? ""
             user.lastName = self.lastName ?? ""
-            user.email = self.email ?? ""
+            user.email = self.email
+            user.imageURL = self.imageURL ?? ""
+            user.userType = self.userType.requestType
             try await self.$devices.load(on: database)
             user.deviceIds = self.devices.compactMap({ $0.id?.uuidString })
             return user
@@ -51,6 +53,21 @@ extension User {
 
 extension User.UserType {
     var model: UserType {
+        switch self {
+        case .admin:
+            return .admin
+        case .ambassador:
+            return .ambassador
+        case .student:
+            return .student
+        default:
+            return .student
+        }
+    }
+}
+
+extension UserType {
+    var requestType: User.UserType {
         switch self {
         case .admin:
             return .admin

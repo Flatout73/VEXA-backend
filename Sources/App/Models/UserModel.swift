@@ -31,6 +31,12 @@ final class UserModel: Content, Model, Authenticatable {
     @Field(key: "isEmailVerified")
     var isEmailVerified: Bool
 
+    @OptionalChild(for: \AmbassadorModel.$user)
+    var ambassador: AmbassadorModel?
+
+    @OptionalChild(for: \StudentModel.$user)
+    var student: StudentModel?
+
     @Children(for: \DeviceModel.$user)
     var devices: [DeviceModel]
 

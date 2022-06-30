@@ -28,11 +28,6 @@ struct AuthenticationController: RouteCollection {
             //auth.post("recover", use: recoverAccount)
 
             auth.post("accessToken", use: refreshAccessToken)
-
-            // Authentication required
-//            auth.group(UserAuthenticator()) { authenticated in
-//                authenticated.get("me", use: getCurrentUser)
-//            }
         }
     }
 
@@ -60,6 +55,8 @@ struct AuthenticationController: RouteCollection {
             .create(createdUser)
 
         try await req.emailVerifier.verify(for: createdUser)
+
+        try await createdUser.$student.create(StudentModel(), on: req.db)
 
         return createdUser
     }
@@ -96,7 +93,7 @@ struct AuthenticationController: RouteCollection {
         response.user = try await user.requestUser(for: req.db)
         response.accessToken = try req.jwt.sign(SessionJWTToken(user: user))
         response.refreshToken = token
-        return Proto(from: try Google_Protobuf_Any(message: response))
+        return Proto(from: response)
 
     }
 
@@ -135,15 +132,6 @@ struct AuthenticationController: RouteCollection {
             throw AuthenticationError.refreshTokenHasExpired
         }
     }
-
-//    private func getCurrentUser(_ req: Request) throws -> EventLoopFuture<UserDTO> {
-//        let payload = try req.auth.require(Payload.self)
-//
-//        return req.users
-//            .find(id: payload.userID)
-//            .unwrap(or: AuthenticationError.userNotFound)
-//            .map { UserDTO(from: $0) }
-//    }
 
     private func verifyEmail(_ req: Request) throws -> EventLoopFuture<HTTPStatus> {
         let hashedToken = try req.query.get(String.self, at: "token")
