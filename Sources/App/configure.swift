@@ -38,10 +38,10 @@ public func configure(_ app: Application) throws {
     // register routes
     try routes(app)
     try migrations(app)
-    try queues(app)
+    // try queues(app)
 
     if app.environment == .development {
         try app.autoMigrate().wait()
-        try app.queues.startInProcessJobs()
+        //try app.queues.startInProcessJobs()
     }
 }
