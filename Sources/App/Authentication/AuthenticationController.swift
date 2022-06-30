@@ -121,6 +121,7 @@ struct AuthenticationController: RouteCollection {
             }
             let token = req.random.generate(bits: 256)
             let refreshToken = try RefreshToken(token: SHA256.hash(token), userID: user.requireID())
+            try await req.refreshTokens.create(refreshToken)
 
             let payload = try SessionJWTToken(user: user)
             let accessToken = try req.jwt.sign(payload)
@@ -129,7 +130,7 @@ struct AuthenticationController: RouteCollection {
             response.refreshToken = token
             response.accessToken = accessToken
             response.user = try await user.requestUser(for: req.db)
-            return Proto(from: try Google_Protobuf_Any(message: response))
+            return Proto(from: response)
         } else {
             throw AuthenticationError.refreshTokenHasExpired
         }

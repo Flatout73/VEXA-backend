@@ -27,7 +27,7 @@ struct EmailVerifier {
             try await emailTokenRepository.create(emailToken)
             print("Email token created: \(emailToken)")
         }
-        let verifyUrl = url(token: token)
+        let verifyUrl = url(token: emailToken.token)
 
         // TODO: Add mailgun
         //try await self.queue.dispatch(EmailJob.self, .init(VerificationEmail(verifyUrl: verifyUrl), to: user.email))
