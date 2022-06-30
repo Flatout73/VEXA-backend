@@ -40,8 +40,8 @@ public func configure(_ app: Application) throws {
     try migrations(app)
      try queues(app)
 
-    if app.environment == .development {
+    //if app.environment == .development {
         try app.autoMigrate().wait()
         //try app.queues.startInProcessJobs()
-    }
+    //}
 }
