@@ -13,6 +13,7 @@ struct CreateContent: AsyncMigration {
         try await database.schema("contents")
             .id()
             .field("title", .string, .required)
+            .field("description", .string)
             .field("videoURL", .string)
             .field("imageURL", .string)
             .field("likes", .array(of: .string), .required)

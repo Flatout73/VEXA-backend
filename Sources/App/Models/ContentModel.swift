@@ -18,7 +18,9 @@ final class ContentModel: Model, Vapor.Content {
     var ambassador: AmbassadorModel
 
     @Field(key: "title")
-    var title: String?
+    var title: String
+    @OptionalField(key: "description")
+    var description: String?
     @OptionalField(key: "videoURL")
     var videoURL: String?
     @OptionalField(key: "imageURL")
