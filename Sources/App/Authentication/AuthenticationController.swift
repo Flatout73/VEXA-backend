@@ -41,7 +41,6 @@ struct AuthenticationController: RouteCollection {
         guard let content = req.body.string else {
             throw AuthenticationError.invalidEmailOrPassword
         }
-
         
         var user = try User(jsonString: content)
 

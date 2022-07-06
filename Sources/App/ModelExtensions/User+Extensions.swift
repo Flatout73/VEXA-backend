@@ -35,6 +35,7 @@ extension User {
         let user = UserModel(firstName: self.firstName,
                              lastName: self.lastName,
                              email: self.email,
+                             imageURL: self.imageURL,
                              password: self.password)
         let devices: [DeviceModel] = self.deviceIds.map {
             let device = DeviceModel()

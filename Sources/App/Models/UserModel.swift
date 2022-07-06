@@ -45,12 +45,14 @@ final class UserModel: Content, Model, Authenticatable {
     }
 
     init(userID: UUID? = nil, firstName: String, lastName: String, email: String,
+         imageURL: String?,
          password: String?, userType: UserType = .student,
          isEmailVerified: Bool = false) {
         self.id = userID
         self.firstName = firstName
         self.lastName = lastName
         self.email = email
+        self.imageURL = imageURL
         self.password = password
         self.userType = userType
         self.isEmailVerified = isEmailVerified

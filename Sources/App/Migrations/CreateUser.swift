@@ -11,6 +11,7 @@ struct CreateUser: AsyncMigration {
             .field("imageURL", .string)
             .field("userType", .string, .required)
             .field("isEmailVerified", .bool)
+            .unique(on: "email")
             .create()
     }
 
