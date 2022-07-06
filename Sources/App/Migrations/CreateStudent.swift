@@ -10,6 +10,7 @@ struct CreateStudent: AsyncMigration {
             .field("enrollmentYear", .int32)
             .field("bio", .string)
             .field("user", .uuid, .references("users", "id", onDelete: .cascade))
+            .field("dateOfBirthday", .datetime)
             .create()
     }
 

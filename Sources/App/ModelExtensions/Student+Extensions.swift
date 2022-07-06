@@ -12,6 +12,7 @@ import Protobuf
 extension StudentModel {
     func requestStudent(for db: Database) async throws -> Student {
         var student = Student()
+        try await self.$user.load(on: db)
         student.user = try await self.user.requestUser(for: db)
         student.nativeLanguage = self.nativeLanguage ?? ""
         student.bio = self.bio ?? ""

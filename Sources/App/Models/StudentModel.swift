@@ -29,6 +29,9 @@ final class StudentModel: Model, Vapor.Content {
     @OptionalField(key: "bio")
     var bio: String?
 
+    @Timestamp(key: "dateOfBirthday", on: .none)
+    var dateOfBirthday: Date?
+
     init() {
 
     }
