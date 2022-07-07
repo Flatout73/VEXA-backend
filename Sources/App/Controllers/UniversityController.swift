@@ -16,9 +16,11 @@ struct UniversityController: RouteCollection {
         universities.get(use: fetchAll)
         universities.get(":x", use: index)
         universities.post(use: create)
-        universities.group(":uniID") { todo in
-            todo.delete(use: delete)
-        }
+
+        universities.group(UserAuthenticator(), configure: { group in
+            group.post([":uniID", "follow"], use: follow)
+            group.delete(":uniID", use: delete)
+        })
 
         universities.put([":x", "addImages"], use: addImages)
     }
@@ -82,6 +84,36 @@ struct UniversityController: RouteCollection {
         try await uni.update(on: req.db)
 
         return uni
+    }
+
+    func follow(req: Request) async throws -> HTTPStatus {
+        guard let uni = try await UniversityModel.find(req.parameters.get("uniID"), on: req.db) else {
+            throw Abort(.notFound)
+        }
+        let payload = try req.auth.require(SessionJWTToken.self)
+
+        guard let user = try await req.users
+            .find(id: payload.userID) else {
+            throw AuthenticationError.userNotFound
+        }
+
+        try await user.$student.load(on: req.db)
+
+        guard let student = user.student else {
+            throw AuthenticationError.userNotFound
+        }
+
+        try await uni.$studentsFollowed.load(on: req.db)
+
+        if try await uni.$studentsFollowed.isAttached(to: student, on: req.db) {
+            try await uni.$studentsFollowed.detach(student, on: req.db)
+        } else {
+            try await uni.$studentsFollowed.attach(student, on: req.db)
+        }
+
+        try await uni.save(on: req.db)
+
+        return .ok
     }
 }
 

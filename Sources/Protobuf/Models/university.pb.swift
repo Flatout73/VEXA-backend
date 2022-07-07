@@ -26,57 +26,105 @@ public struct University {
   // methods supported on all messages.
 
   public var id: String {
-    get {return _id ?? String()}
-    set {_id = newValue}
+    get {return _storage._id ?? String()}
+    set {_uniqueStorage()._id = newValue}
   }
   /// Returns true if `id` has been explicitly set.
-  public var hasID: Bool {return self._id != nil}
+  public var hasID: Bool {return _storage._id != nil}
   /// Clears the value of `id`. Subsequent reads from it will return its default value.
-  public mutating func clearID() {self._id = nil}
+  public mutating func clearID() {_uniqueStorage()._id = nil}
 
-  public var name: String = String()
+  public var name: String {
+    get {return _storage._name}
+    set {_uniqueStorage()._name = newValue}
+  }
 
-  public var photos: [String] = []
+  public var photos: [String] {
+    get {return _storage._photos}
+    set {_uniqueStorage()._photos = newValue}
+  }
 
-  public var tags: [String] = []
+  public var tags: [String] {
+    get {return _storage._tags}
+    set {_uniqueStorage()._tags = newValue}
+  }
 
-  public var applyLink: String = String()
+  public var applyLink: String {
+    get {return _storage._applyLink}
+    set {_uniqueStorage()._applyLink = newValue}
+  }
 
-  public var ambassadors: [University.Ambassador] = []
+  public var ambassadors: [University.Ambassador] {
+    get {return _storage._ambassadors}
+    set {_uniqueStorage()._ambassadors = newValue}
+  }
 
-  public var videos: [University.Video] = []
+  public var videos: [University.Video] {
+    get {return _storage._videos}
+    set {_uniqueStorage()._videos = newValue}
+  }
 
-  public var studentsCount: Int32 = 0
+  public var studentsCount: Int32 {
+    get {return _storage._studentsCount}
+    set {_uniqueStorage()._studentsCount = newValue}
+  }
 
-  public var gpa: Double = 0
+  public var gpa: Double {
+    get {return _storage._gpa}
+    set {_uniqueStorage()._gpa = newValue}
+  }
 
-  public var exams: String = String()
+  public var exams: String {
+    get {return _storage._exams}
+    set {_uniqueStorage()._exams = newValue}
+  }
 
   public var requirementsDescription: String {
-    get {return _requirementsDescription ?? String()}
-    set {_requirementsDescription = newValue}
+    get {return _storage._requirementsDescription ?? String()}
+    set {_uniqueStorage()._requirementsDescription = newValue}
   }
   /// Returns true if `requirementsDescription` has been explicitly set.
-  public var hasRequirementsDescription: Bool {return self._requirementsDescription != nil}
+  public var hasRequirementsDescription: Bool {return _storage._requirementsDescription != nil}
   /// Clears the value of `requirementsDescription`. Subsequent reads from it will return its default value.
-  public mutating func clearRequirementsDescription() {self._requirementsDescription = nil}
+  public mutating func clearRequirementsDescription() {_uniqueStorage()._requirementsDescription = nil}
 
   public var facties: String {
-    get {return _facties ?? String()}
-    set {_facties = newValue}
+    get {return _storage._facties ?? String()}
+    set {_uniqueStorage()._facties = newValue}
   }
   /// Returns true if `facties` has been explicitly set.
-  public var hasFacties: Bool {return self._facties != nil}
+  public var hasFacties: Bool {return _storage._facties != nil}
   /// Clears the value of `facties`. Subsequent reads from it will return its default value.
-  public mutating func clearFacties() {self._facties = nil}
+  public mutating func clearFacties() {_uniqueStorage()._facties = nil}
 
-  public var latitude: Double = 0
+  public var latitude: Double {
+    get {return _storage._latitude}
+    set {_uniqueStorage()._latitude = newValue}
+  }
 
-  public var longitude: Double = 0
+  public var longitude: Double {
+    get {return _storage._longitude}
+    set {_uniqueStorage()._longitude = newValue}
+  }
 
-  public var phone: String = String()
+  public var phone: String {
+    get {return _storage._phone}
+    set {_uniqueStorage()._phone = newValue}
+  }
 
-  public var address: String = String()
+  public var address: String {
+    get {return _storage._address}
+    set {_uniqueStorage()._address = newValue}
+  }
+
+  public var price: Int32 {
+    get {return _storage._price ?? 0}
+    set {_uniqueStorage()._price = newValue}
+  }
+  /// Returns true if `price` has been explicitly set.
+  public var hasPrice: Bool {return _storage._price != nil}
+  /// Clears the value of `price`. Subsequent reads from it will return its default value.
+  public mutating func clearPrice() {_uniqueStorage()._price = nil}
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -132,9 +180,7 @@ public struct University {
 
   public init() {}
 
-  fileprivate var _id: String? = nil
-  fileprivate var _requirementsDescription: String? = nil
-  fileprivate var _facties: String? = nil
+  fileprivate var _storage = _StorageClass.defaultInstance
 }
 
 #if swift(>=5.5) && canImport(_Concurrency)
@@ -164,108 +210,178 @@ extension University: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
     14: .same(proto: "longitude"),
     15: .same(proto: "phone"),
     16: .same(proto: "address"),
+    17: .same(proto: "price"),
   ]
 
+  fileprivate class _StorageClass {
+    var _id: String? = nil
+    var _name: String = String()
+    var _photos: [String] = []
+    var _tags: [String] = []
+    var _applyLink: String = String()
+    var _ambassadors: [University.Ambassador] = []
+    var _videos: [University.Video] = []
+    var _studentsCount: Int32 = 0
+    var _gpa: Double = 0
+    var _exams: String = String()
+    var _requirementsDescription: String? = nil
+    var _facties: String? = nil
+    var _latitude: Double = 0
+    var _longitude: Double = 0
+    var _phone: String = String()
+    var _address: String = String()
+    var _price: Int32? = nil
+
+    static let defaultInstance = _StorageClass()
+
+    private init() {}
+
+    init(copying source: _StorageClass) {
+      _id = source._id
+      _name = source._name
+      _photos = source._photos
+      _tags = source._tags
+      _applyLink = source._applyLink
+      _ambassadors = source._ambassadors
+      _videos = source._videos
+      _studentsCount = source._studentsCount
+      _gpa = source._gpa
+      _exams = source._exams
+      _requirementsDescription = source._requirementsDescription
+      _facties = source._facties
+      _latitude = source._latitude
+      _longitude = source._longitude
+      _phone = source._phone
+      _address = source._address
+      _price = source._price
+    }
+  }
+
+  fileprivate mutating func _uniqueStorage() -> _StorageClass {
+    if !isKnownUniquelyReferenced(&_storage) {
+      _storage = _StorageClass(copying: _storage)
+    }
+    return _storage
+  }
+
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self._id) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.name) }()
-      case 3: try { try decoder.decodeRepeatedStringField(value: &self.photos) }()
-      case 4: try { try decoder.decodeRepeatedStringField(value: &self.tags) }()
-      case 5: try { try decoder.decodeSingularStringField(value: &self.applyLink) }()
-      case 6: try { try decoder.decodeRepeatedMessageField(value: &self.ambassadors) }()
-      case 7: try { try decoder.decodeRepeatedMessageField(value: &self.videos) }()
-      case 8: try { try decoder.decodeSingularInt32Field(value: &self.studentsCount) }()
-      case 9: try { try decoder.decodeSingularDoubleField(value: &self.gpa) }()
-      case 10: try { try decoder.decodeSingularStringField(value: &self.exams) }()
-      case 11: try { try decoder.decodeSingularStringField(value: &self._requirementsDescription) }()
-      case 12: try { try decoder.decodeSingularStringField(value: &self._facties) }()
-      case 13: try { try decoder.decodeSingularDoubleField(value: &self.latitude) }()
-      case 14: try { try decoder.decodeSingularDoubleField(value: &self.longitude) }()
-      case 15: try { try decoder.decodeSingularStringField(value: &self.phone) }()
-      case 16: try { try decoder.decodeSingularStringField(value: &self.address) }()
-      default: break
+    _ = _uniqueStorage()
+    try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
+      while let fieldNumber = try decoder.nextFieldNumber() {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every case branch when no optimizations are
+        // enabled. https://github.com/apple/swift-protobuf/issues/1034
+        switch fieldNumber {
+        case 1: try { try decoder.decodeSingularStringField(value: &_storage._id) }()
+        case 2: try { try decoder.decodeSingularStringField(value: &_storage._name) }()
+        case 3: try { try decoder.decodeRepeatedStringField(value: &_storage._photos) }()
+        case 4: try { try decoder.decodeRepeatedStringField(value: &_storage._tags) }()
+        case 5: try { try decoder.decodeSingularStringField(value: &_storage._applyLink) }()
+        case 6: try { try decoder.decodeRepeatedMessageField(value: &_storage._ambassadors) }()
+        case 7: try { try decoder.decodeRepeatedMessageField(value: &_storage._videos) }()
+        case 8: try { try decoder.decodeSingularInt32Field(value: &_storage._studentsCount) }()
+        case 9: try { try decoder.decodeSingularDoubleField(value: &_storage._gpa) }()
+        case 10: try { try decoder.decodeSingularStringField(value: &_storage._exams) }()
+        case 11: try { try decoder.decodeSingularStringField(value: &_storage._requirementsDescription) }()
+        case 12: try { try decoder.decodeSingularStringField(value: &_storage._facties) }()
+        case 13: try { try decoder.decodeSingularDoubleField(value: &_storage._latitude) }()
+        case 14: try { try decoder.decodeSingularDoubleField(value: &_storage._longitude) }()
+        case 15: try { try decoder.decodeSingularStringField(value: &_storage._phone) }()
+        case 16: try { try decoder.decodeSingularStringField(value: &_storage._address) }()
+        case 17: try { try decoder.decodeSingularInt32Field(value: &_storage._price) }()
+        default: break
+        }
       }
     }
   }
 
   public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    try { if let v = self._id {
-      try visitor.visitSingularStringField(value: v, fieldNumber: 1)
-    } }()
-    if !self.name.isEmpty {
-      try visitor.visitSingularStringField(value: self.name, fieldNumber: 2)
-    }
-    if !self.photos.isEmpty {
-      try visitor.visitRepeatedStringField(value: self.photos, fieldNumber: 3)
-    }
-    if !self.tags.isEmpty {
-      try visitor.visitRepeatedStringField(value: self.tags, fieldNumber: 4)
-    }
-    if !self.applyLink.isEmpty {
-      try visitor.visitSingularStringField(value: self.applyLink, fieldNumber: 5)
-    }
-    if !self.ambassadors.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.ambassadors, fieldNumber: 6)
-    }
-    if !self.videos.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.videos, fieldNumber: 7)
-    }
-    if self.studentsCount != 0 {
-      try visitor.visitSingularInt32Field(value: self.studentsCount, fieldNumber: 8)
-    }
-    if self.gpa != 0 {
-      try visitor.visitSingularDoubleField(value: self.gpa, fieldNumber: 9)
-    }
-    if !self.exams.isEmpty {
-      try visitor.visitSingularStringField(value: self.exams, fieldNumber: 10)
-    }
-    try { if let v = self._requirementsDescription {
-      try visitor.visitSingularStringField(value: v, fieldNumber: 11)
-    } }()
-    try { if let v = self._facties {
-      try visitor.visitSingularStringField(value: v, fieldNumber: 12)
-    } }()
-    if self.latitude != 0 {
-      try visitor.visitSingularDoubleField(value: self.latitude, fieldNumber: 13)
-    }
-    if self.longitude != 0 {
-      try visitor.visitSingularDoubleField(value: self.longitude, fieldNumber: 14)
-    }
-    if !self.phone.isEmpty {
-      try visitor.visitSingularStringField(value: self.phone, fieldNumber: 15)
-    }
-    if !self.address.isEmpty {
-      try visitor.visitSingularStringField(value: self.address, fieldNumber: 16)
+    try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every if/case branch local when no optimizations
+      // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+      // https://github.com/apple/swift-protobuf/issues/1182
+      try { if let v = _storage._id {
+        try visitor.visitSingularStringField(value: v, fieldNumber: 1)
+      } }()
+      if !_storage._name.isEmpty {
+        try visitor.visitSingularStringField(value: _storage._name, fieldNumber: 2)
+      }
+      if !_storage._photos.isEmpty {
+        try visitor.visitRepeatedStringField(value: _storage._photos, fieldNumber: 3)
+      }
+      if !_storage._tags.isEmpty {
+        try visitor.visitRepeatedStringField(value: _storage._tags, fieldNumber: 4)
+      }
+      if !_storage._applyLink.isEmpty {
+        try visitor.visitSingularStringField(value: _storage._applyLink, fieldNumber: 5)
+      }
+      if !_storage._ambassadors.isEmpty {
+        try visitor.visitRepeatedMessageField(value: _storage._ambassadors, fieldNumber: 6)
+      }
+      if !_storage._videos.isEmpty {
+        try visitor.visitRepeatedMessageField(value: _storage._videos, fieldNumber: 7)
+      }
+      if _storage._studentsCount != 0 {
+        try visitor.visitSingularInt32Field(value: _storage._studentsCount, fieldNumber: 8)
+      }
+      if _storage._gpa != 0 {
+        try visitor.visitSingularDoubleField(value: _storage._gpa, fieldNumber: 9)
+      }
+      if !_storage._exams.isEmpty {
+        try visitor.visitSingularStringField(value: _storage._exams, fieldNumber: 10)
+      }
+      try { if let v = _storage._requirementsDescription {
+        try visitor.visitSingularStringField(value: v, fieldNumber: 11)
+      } }()
+      try { if let v = _storage._facties {
+        try visitor.visitSingularStringField(value: v, fieldNumber: 12)
+      } }()
+      if _storage._latitude != 0 {
+        try visitor.visitSingularDoubleField(value: _storage._latitude, fieldNumber: 13)
+      }
+      if _storage._longitude != 0 {
+        try visitor.visitSingularDoubleField(value: _storage._longitude, fieldNumber: 14)
+      }
+      if !_storage._phone.isEmpty {
+        try visitor.visitSingularStringField(value: _storage._phone, fieldNumber: 15)
+      }
+      if !_storage._address.isEmpty {
+        try visitor.visitSingularStringField(value: _storage._address, fieldNumber: 16)
+      }
+      try { if let v = _storage._price {
+        try visitor.visitSingularInt32Field(value: v, fieldNumber: 17)
+      } }()
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   public static func ==(lhs: University, rhs: University) -> Bool {
-    if lhs._id != rhs._id {return false}
-    if lhs.name != rhs.name {return false}
-    if lhs.photos != rhs.photos {return false}
-    if lhs.tags != rhs.tags {return false}
-    if lhs.applyLink != rhs.applyLink {return false}
-    if lhs.ambassadors != rhs.ambassadors {return false}
-    if lhs.videos != rhs.videos {return false}
-    if lhs.studentsCount != rhs.studentsCount {return false}
-    if lhs.gpa != rhs.gpa {return false}
-    if lhs.exams != rhs.exams {return false}
-    if lhs._requirementsDescription != rhs._requirementsDescription {return false}
-    if lhs._facties != rhs._facties {return false}
-    if lhs.latitude != rhs.latitude {return false}
-    if lhs.longitude != rhs.longitude {return false}
-    if lhs.phone != rhs.phone {return false}
-    if lhs.address != rhs.address {return false}
+    if lhs._storage !== rhs._storage {
+      let storagesAreEqual: Bool = withExtendedLifetime((lhs._storage, rhs._storage)) { (_args: (_StorageClass, _StorageClass)) in
+        let _storage = _args.0
+        let rhs_storage = _args.1
+        if _storage._id != rhs_storage._id {return false}
+        if _storage._name != rhs_storage._name {return false}
+        if _storage._photos != rhs_storage._photos {return false}
+        if _storage._tags != rhs_storage._tags {return false}
+        if _storage._applyLink != rhs_storage._applyLink {return false}
+        if _storage._ambassadors != rhs_storage._ambassadors {return false}
+        if _storage._videos != rhs_storage._videos {return false}
+        if _storage._studentsCount != rhs_storage._studentsCount {return false}
+        if _storage._gpa != rhs_storage._gpa {return false}
+        if _storage._exams != rhs_storage._exams {return false}
+        if _storage._requirementsDescription != rhs_storage._requirementsDescription {return false}
+        if _storage._facties != rhs_storage._facties {return false}
+        if _storage._latitude != rhs_storage._latitude {return false}
+        if _storage._longitude != rhs_storage._longitude {return false}
+        if _storage._phone != rhs_storage._phone {return false}
+        if _storage._address != rhs_storage._address {return false}
+        if _storage._price != rhs_storage._price {return false}
+        return true
+      }
+      if !storagesAreEqual {return false}
+    }
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

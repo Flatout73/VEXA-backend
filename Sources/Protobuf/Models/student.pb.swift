@@ -72,6 +72,8 @@ public struct Student {
   /// Clears the value of `bio`. Subsequent reads from it will return its default value.
   public mutating func clearBio() {self._bio = nil}
 
+  public var unisFollowed: [ShortUniversity] = []
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
@@ -98,6 +100,7 @@ extension Student: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
     4: .same(proto: "enrollmentYear"),
     5: .same(proto: "currentCountry"),
     6: .same(proto: "bio"),
+    7: .same(proto: "unisFollowed"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -112,6 +115,7 @@ extension Student: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
       case 4: try { try decoder.decodeSingularInt32Field(value: &self._enrollmentYear) }()
       case 5: try { try decoder.decodeSingularStringField(value: &self._currentCountry) }()
       case 6: try { try decoder.decodeSingularStringField(value: &self._bio) }()
+      case 7: try { try decoder.decodeRepeatedMessageField(value: &self.unisFollowed) }()
       default: break
       }
     }
@@ -140,6 +144,9 @@ extension Student: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
     try { if let v = self._bio {
       try visitor.visitSingularStringField(value: v, fieldNumber: 6)
     } }()
+    if !self.unisFollowed.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.unisFollowed, fieldNumber: 7)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -150,6 +157,7 @@ extension Student: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
     if lhs._enrollmentYear != rhs._enrollmentYear {return false}
     if lhs._currentCountry != rhs._currentCountry {return false}
     if lhs._bio != rhs._bio {return false}
+    if lhs.unisFollowed != rhs.unisFollowed {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

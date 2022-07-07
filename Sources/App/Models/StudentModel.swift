@@ -33,6 +33,8 @@ final class StudentModel: Model, Vapor.Content {
     var dateOfBirthday: Date?
     @Siblings(through: LikeModel.self, from: \.$student, to: \.$content)
     var contentLiked
+    @Siblings(through: FollowModel.self, from: \.$student, to: \.$uni)
+    var unisFollowed
 
     init() {
 

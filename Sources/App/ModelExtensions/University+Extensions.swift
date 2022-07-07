@@ -43,6 +43,9 @@ extension UniversityModel {
             video.likes = Int32(content?.likes.count ?? 0)
             return video
         } ?? []
+        if let price = price {
+            uni.price = Int32(price)
+        }
         return uni
     }
 }
@@ -64,6 +67,7 @@ extension University {
         uni.phone = phone
         uni.address = address
         uni.tags = tags
+        uni.price = Int(price)
         return uni
     }
 }

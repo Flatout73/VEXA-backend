@@ -19,6 +19,14 @@ extension StudentModel {
         student.otherLanguages = self.otherLanguages ?? []
         student.currentCountry = self.currentCountry ?? ""
         student.enrollmentYear = self.enrollmentYear ?? 0
+        try await self.$unisFollowed.load(on: db)
+        student.unisFollowed = self.unisFollowed.map {
+            var uni = ShortUniversity()
+            uni.name = $0.name
+            uni.id = $0.id?.uuidString ?? ""
+            uni.imageURL = $0.photos.first ?? ""
+            return uni
+        }
         return student
     }
 }

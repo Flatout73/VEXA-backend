@@ -46,6 +46,11 @@ final class UniversityModel: Model {
     @Field(key: "address")
     var address: String
 
+    @OptionalField(key: "price")
+    var price: Int?
+    @Siblings(through: FollowModel.self, from: \.$uni, to: \.$student)
+    var studentsFollowed
+
     init() {
         tags = []
         photos = []

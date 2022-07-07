@@ -25,6 +25,7 @@ struct CreateUniversity: AsyncMigration {
             .field("longitude", .double, .required)
             .field("phone", .string, .required)
             .field("address", .string, .required)
+            .field("price", .int32)
             .create()
     }
 
