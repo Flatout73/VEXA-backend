@@ -56,7 +56,7 @@ struct ContentController: RouteCollection {
         try await user.$ambassador.load(on: req.db)
         let ambassador: AmbassadorModel? = user.ambassador
 
-        let content = try Protobuf.CreateContent(jsonString: contentString, options: protoConfig)
+        let content = try Protobuf.CreateContentRequest(jsonString: contentString, options: protoConfig)
         let vm = try await content.viewModel(for: req.db, ambassador: ambassador)
         try await vm.save(on: req.db)
         return vm

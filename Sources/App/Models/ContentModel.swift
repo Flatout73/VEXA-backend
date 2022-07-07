@@ -8,6 +8,18 @@
 import Fluent
 import Vapor
 
+enum Category: String, Codable {
+    case other
+    case housing
+    case dining
+    case sportsAndRecreation
+    case academics
+    case healthAndSafety
+    case career
+    case campusEvents
+    case campusClubs
+}
+
 final class ContentModel: Model, Vapor.Content {
     static let schema = "contents"
 
@@ -27,6 +39,8 @@ final class ContentModel: Model, Vapor.Content {
     var imageURL: String?
     @Field(key: "approved")
     var approved: Bool
+    @Enum(key: "category")
+    var category: Category
 
     @Siblings(through: LikeModel.self, from: \.$content, to: \.$student)
     var likes: [StudentModel]

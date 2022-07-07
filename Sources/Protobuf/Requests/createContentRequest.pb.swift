@@ -45,12 +45,24 @@ public struct CreateContentRequest {
   /// Clears the value of `imageURL`. Subsequent reads from it will return its default value.
   public mutating func clearImageURL() {self._imageURL = nil}
 
+  public var description_p: String {
+    get {return _description_p ?? String()}
+    set {_description_p = newValue}
+  }
+  /// Returns true if `description_p` has been explicitly set.
+  public var hasDescription_p: Bool {return self._description_p != nil}
+  /// Clears the value of `description_p`. Subsequent reads from it will return its default value.
+  public mutating func clearDescription_p() {self._description_p = nil}
+
+  public var category: String = String()
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
 
   fileprivate var _videoURL: String? = nil
   fileprivate var _imageURL: String? = nil
+  fileprivate var _description_p: String? = nil
 }
 
 #if swift(>=5.5) && canImport(_Concurrency)
@@ -65,6 +77,8 @@ extension CreateContentRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     3: .same(proto: "title"),
     4: .same(proto: "videoURL"),
     5: .same(proto: "imageURL"),
+    6: .same(proto: "description"),
+    7: .same(proto: "category"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -76,6 +90,8 @@ extension CreateContentRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
       case 3: try { try decoder.decodeSingularStringField(value: &self.title) }()
       case 4: try { try decoder.decodeSingularStringField(value: &self._videoURL) }()
       case 5: try { try decoder.decodeSingularStringField(value: &self._imageURL) }()
+      case 6: try { try decoder.decodeSingularStringField(value: &self._description_p) }()
+      case 7: try { try decoder.decodeSingularStringField(value: &self.category) }()
       default: break
       }
     }
@@ -95,6 +111,12 @@ extension CreateContentRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     try { if let v = self._imageURL {
       try visitor.visitSingularStringField(value: v, fieldNumber: 5)
     } }()
+    try { if let v = self._description_p {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 6)
+    } }()
+    if !self.category.isEmpty {
+      try visitor.visitSingularStringField(value: self.category, fieldNumber: 7)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -102,6 +124,8 @@ extension CreateContentRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     if lhs.title != rhs.title {return false}
     if lhs._videoURL != rhs._videoURL {return false}
     if lhs._imageURL != rhs._imageURL {return false}
+    if lhs._description_p != rhs._description_p {return false}
+    if lhs.category != rhs.category {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

@@ -72,6 +72,20 @@ public struct Content {
     set {_uniqueStorage()._isLikedByMe = newValue}
   }
 
+  public var description_p: String {
+    get {return _storage._description_p ?? String()}
+    set {_uniqueStorage()._description_p = newValue}
+  }
+  /// Returns true if `description_p` has been explicitly set.
+  public var hasDescription_p: Bool {return _storage._description_p != nil}
+  /// Clears the value of `description_p`. Subsequent reads from it will return its default value.
+  public mutating func clearDescription_p() {_uniqueStorage()._description_p = nil}
+
+  public var category: String {
+    get {return _storage._category}
+    set {_uniqueStorage()._category = newValue}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
@@ -95,6 +109,8 @@ extension Content: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
     5: .same(proto: "imageURL"),
     6: .same(proto: "likesCount"),
     7: .same(proto: "isLikedByMe"),
+    8: .same(proto: "description"),
+    9: .same(proto: "category"),
   ]
 
   fileprivate class _StorageClass {
@@ -105,6 +121,8 @@ extension Content: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
     var _imageURL: String? = nil
     var _likesCount: Int32 = 0
     var _isLikedByMe: Bool = false
+    var _description_p: String? = nil
+    var _category: String = String()
 
     static let defaultInstance = _StorageClass()
 
@@ -118,6 +136,8 @@ extension Content: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
       _imageURL = source._imageURL
       _likesCount = source._likesCount
       _isLikedByMe = source._isLikedByMe
+      _description_p = source._description_p
+      _category = source._category
     }
   }
 
@@ -143,6 +163,8 @@ extension Content: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
         case 5: try { try decoder.decodeSingularStringField(value: &_storage._imageURL) }()
         case 6: try { try decoder.decodeSingularInt32Field(value: &_storage._likesCount) }()
         case 7: try { try decoder.decodeSingularBoolField(value: &_storage._isLikedByMe) }()
+        case 8: try { try decoder.decodeSingularStringField(value: &_storage._description_p) }()
+        case 9: try { try decoder.decodeSingularStringField(value: &_storage._category) }()
         default: break
         }
       }
@@ -176,6 +198,12 @@ extension Content: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
       if _storage._isLikedByMe != false {
         try visitor.visitSingularBoolField(value: _storage._isLikedByMe, fieldNumber: 7)
       }
+      try { if let v = _storage._description_p {
+        try visitor.visitSingularStringField(value: v, fieldNumber: 8)
+      } }()
+      if !_storage._category.isEmpty {
+        try visitor.visitSingularStringField(value: _storage._category, fieldNumber: 9)
+      }
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -192,6 +220,8 @@ extension Content: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
         if _storage._imageURL != rhs_storage._imageURL {return false}
         if _storage._likesCount != rhs_storage._likesCount {return false}
         if _storage._isLikedByMe != rhs_storage._isLikedByMe {return false}
+        if _storage._description_p != rhs_storage._description_p {return false}
+        if _storage._category != rhs_storage._category {return false}
         return true
       }
       if !storagesAreEqual {return false}

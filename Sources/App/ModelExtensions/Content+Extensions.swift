@@ -17,6 +17,8 @@ extension ContentModel {
         content.title = title ?? ""
         content.imageURL = imageURL ?? ""
         content.videoURL = videoURL ?? ""
+        content.description_p = description
+        content.category = category.rawValue
         try await self.$likes.load(on: database)
         content.likesCount = Int32(likes.count)
         if let student = student {
@@ -31,13 +33,14 @@ extension ContentModel {
     }
 }
 
-extension Protobuf.CreateContent {
+extension Protobuf.CreateContentRequest {
     func viewModel(for db: Database, ambassador: AmbassadorModel?) async throws -> ContentModel {
         let content = ContentModel()
         content.imageURL = imageURL
         content.videoURL = videoURL
         content.title = title
-
+        content.description = description_p
+        content.category = Category(rawValue: category) ?? .other
         try await ambassador?.$contents.create(content, on: db)
 
         return content
