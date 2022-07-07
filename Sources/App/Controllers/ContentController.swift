@@ -101,10 +101,14 @@ struct ContentController: RouteCollection {
         for content in try await ContentModel.query(on: req.db)
             .join(AmbassadorModel.self, on: \ContentModel.$ambassador.$id == \AmbassadorModel.$id)
             .join(UserModel.self, on: \AmbassadorModel.$user.$id == \UserModel.$id)
+            .join(UniversityModel.self, on: \AmbassadorModel.$university.$id == \UniversityModel.$id)
             .group(.or, { group in
             group.filter(\ContentModel.$title ~~ query)
                 .filter(\ContentModel.$description ~~ query)
+                .filter(\ContentModel.$category == (Category(rawValue: query) ?? .other))
                 .filter(UserModel.self, \UserModel.$firstName ~~ query)
+                .filter(UserModel.self, \UserModel.$lastName ~~ query)
+                .filter(UniversityModel.self, \UniversityModel.$name ~~ query)
         })
             .all()
         {
