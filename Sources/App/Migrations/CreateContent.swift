@@ -16,7 +16,6 @@ struct CreateContent: AsyncMigration {
             .field("description", .string)
             .field("videoURL", .string)
             .field("imageURL", .string)
-            .field("likes", .array(of: .string), .required)
             .field("approved", .bool, .required)
             .field("ambassador", .uuid, .references("ambassadors", "id"))
             //.foreignKey("ambassador", references: "ambassadors", "id", onDelete: .cascade)

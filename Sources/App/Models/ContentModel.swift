@@ -25,13 +25,13 @@ final class ContentModel: Model, Vapor.Content {
     var videoURL: String?
     @OptionalField(key: "imageURL")
     var imageURL: String?
-    @Field(key: "likes")
-    var likes: [String]
     @Field(key: "approved")
     var approved: Bool
 
+    @Siblings(through: LikeModel.self, from: \.$content, to: \.$student)
+    var likes: [StudentModel]
+
     init() {
         self.approved = false
-        self.likes = []
     }
 }

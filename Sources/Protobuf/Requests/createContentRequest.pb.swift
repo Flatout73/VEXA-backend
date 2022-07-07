@@ -25,8 +25,6 @@ public struct CreateContentRequest {
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  public var ambassadorID: String = String()
-
   public var title: String = String()
 
   public var videoURL: String {
@@ -64,7 +62,6 @@ extension CreateContentRequest: @unchecked Sendable {}
 extension CreateContentRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = "CreateContentRequest"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "ambassadorID"),
     3: .same(proto: "title"),
     4: .same(proto: "videoURL"),
     5: .same(proto: "imageURL"),
@@ -76,7 +73,6 @@ extension CreateContentRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.ambassadorID) }()
       case 3: try { try decoder.decodeSingularStringField(value: &self.title) }()
       case 4: try { try decoder.decodeSingularStringField(value: &self._videoURL) }()
       case 5: try { try decoder.decodeSingularStringField(value: &self._imageURL) }()
@@ -90,9 +86,6 @@ extension CreateContentRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     // allocates stack space for every if/case branch local when no optimizations
     // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
     // https://github.com/apple/swift-protobuf/issues/1182
-    if !self.ambassadorID.isEmpty {
-      try visitor.visitSingularStringField(value: self.ambassadorID, fieldNumber: 1)
-    }
     if !self.title.isEmpty {
       try visitor.visitSingularStringField(value: self.title, fieldNumber: 3)
     }
@@ -106,7 +99,6 @@ extension CreateContentRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
   }
 
   public static func ==(lhs: CreateContentRequest, rhs: CreateContentRequest) -> Bool {
-    if lhs.ambassadorID != rhs.ambassadorID {return false}
     if lhs.title != rhs.title {return false}
     if lhs._videoURL != rhs._videoURL {return false}
     if lhs._imageURL != rhs._imageURL {return false}

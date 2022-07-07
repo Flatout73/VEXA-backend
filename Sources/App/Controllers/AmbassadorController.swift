@@ -7,7 +7,9 @@ struct AmbassadorController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let users = routes.grouped("ambassadors")
         users.get(":x", use: index)
-        users.post(use: create)
+        users.group(UserAuthenticator(), configure: { auth in
+            auth.post(use: create)
+        })
 //        users.group(":userID") { todo in
 //            todo.delete(use: delete)
 //        }
@@ -28,7 +30,12 @@ struct AmbassadorController: RouteCollection {
         guard let content = req.body.string else {
             throw Abort(.badRequest)
         }
-        let userVM = try await CreateAmbassadorRequest(jsonString: content).model(for: req.db)
+
+        var createRequest = try CreateAmbassadorRequest(jsonString: content)
+        let hash = try req.password
+            .hash(createRequest.user.password)
+        createRequest.user.password = hash
+        let userVM = try await createRequest.model(for: req.db)
         try await userVM.save(on: req.db)
         return userVM
     }

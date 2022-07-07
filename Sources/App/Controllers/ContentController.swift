@@ -21,17 +21,21 @@ struct ContentController: RouteCollection {
         let contents = routes.grouped("discovery")
         contents.get(use: fetchAll)
         contents.get("search", use: search)
-        contents.post(use: create)
-        contents.post([":contentID", "like"], use: like)
-        contents.group(":contentID") { todo in
-            todo.delete(use: delete)
+        contents.group(UserAuthenticator()) { auth in
+            auth.post(use: create)
+            auth.post([":contentID", "like"], use: like)
+            auth.group(":contentID") { todo in
+                todo.delete(use: delete)
+            }
         }
     }
 
     func fetchAll(req: Request) async throws -> Proto {
+        let student: StudentModel? = await fetchStudent(for: req)
+
         var array = ArrayResponse()
         for content in try await ContentModel.query(on: req.db).all() {
-            let vm = try await content.requestContent(on: req.db)
+            let vm = try await content.requestContent(on: req.db, for: student)
             array.content.append(try Google_Protobuf_Any(message: vm))
         }
         return Proto(from: array)
@@ -41,8 +45,19 @@ struct ContentController: RouteCollection {
         guard let contentString = req.body.string else {
             throw Abort(.badRequest)
         }
+
+        let payload = try req.auth.require(SessionJWTToken.self)
+
+        guard let user = try await req.users
+            .find(id: payload.userID) else {
+            throw AuthenticationError.userNotFound
+        }
+
+        try await user.$ambassador.load(on: req.db)
+        let ambassador: AmbassadorModel? = user.ambassador
+
         let content = try Protobuf.CreateContent(jsonString: contentString, options: protoConfig)
-        let vm = try await content.viewModel(for: req.db)
+        let vm = try await content.viewModel(for: req.db, ambassador: ambassador)
         try await vm.save(on: req.db)
         return vm
     }
@@ -53,23 +68,34 @@ struct ContentController: RouteCollection {
         }
         let payload = try req.auth.require(SessionJWTToken.self)
 
-        guard let userID = try await req.users
-            .find(id: payload.userID)?.id?.uuidString else {
+        guard let user = try await req.users
+            .find(id: payload.userID) else {
             throw AuthenticationError.userNotFound
         }
 
-        if let index = content.likes.firstIndex(of: userID) {
-            content.likes.remove(at: index)
-        } else {
-            content.likes.append(userID)
+        try await user.$student.load(on: req.db)
+
+        guard let student = user.student else {
+            throw AuthenticationError.userNotFound
         }
+
+        try await content.$likes.load(on: req.db)
+
+        if try await content.$likes.isAttached(to: student, on: req.db) {
+            try await content.$likes.detach(student, on: req.db)
+        } else {
+            try await content.$likes.attach(student, on: req.db)
+        }
+
         try await content.save(on: req.db)
 
         return .ok
     }
 
     func search(req: Request) async throws -> Proto {
-         let query = try req.query.get(String.self, at: "query")
+        let query = try req.query.get(String.self, at: "query")
+
+        let student: StudentModel? = await fetchStudent(for: req)
 
         var array = ArrayResponse()
         for content in try await ContentModel.query(on: req.db)
@@ -82,7 +108,7 @@ struct ContentController: RouteCollection {
         })
             .all()
         {
-            let vm = try await content.requestContent(on: req.db)
+            let vm = try await content.requestContent(on: req.db, for: student)
             array.content.append(try Google_Protobuf_Any(message: vm))
         }
         return Proto(from: array)
@@ -94,5 +120,21 @@ struct ContentController: RouteCollection {
         }
         try await content.delete(on: req.db)
         return .ok
+    }
+
+    private func fetchStudent(for req: Request) async -> StudentModel? {
+        do {
+            let payload = try req.auth.require(SessionJWTToken.self)
+
+            guard let user = try await req.users
+                .find(id: payload.userID) else {
+                throw AuthenticationError.userNotFound
+            }
+
+            try await user.$student.load(on: req.db)
+            return user.student
+        } catch {
+            return nil
+        }
     }
 }

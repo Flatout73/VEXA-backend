@@ -31,6 +31,8 @@ final class StudentModel: Model, Vapor.Content {
 
     @Timestamp(key: "dateOfBirthday", on: .none)
     var dateOfBirthday: Date?
+    @Siblings(through: LikeModel.self, from: \.$student, to: \.$content)
+    var contentLiked
 
     init() {
 

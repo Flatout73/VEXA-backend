@@ -62,6 +62,8 @@ public struct User {
   /// Clears the value of `imageURL`. Subsequent reads from it will return its default value.
   public mutating func clearImageURL() {self._imageURL = nil}
 
+  public var isEmailVerified: Bool = false
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum UserType: SwiftProtobuf.Enum {
@@ -133,6 +135,7 @@ extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
     6: .same(proto: "userType"),
     7: .same(proto: "deviceIDs"),
     8: .same(proto: "imageURL"),
+    9: .same(proto: "isEmailVerified"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -149,6 +152,7 @@ extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
       case 6: try { try decoder.decodeSingularEnumField(value: &self.userType) }()
       case 7: try { try decoder.decodeRepeatedStringField(value: &self.deviceIds) }()
       case 8: try { try decoder.decodeSingularStringField(value: &self._imageURL) }()
+      case 9: try { try decoder.decodeSingularBoolField(value: &self.isEmailVerified) }()
       default: break
       }
     }
@@ -183,6 +187,9 @@ extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
     try { if let v = self._imageURL {
       try visitor.visitSingularStringField(value: v, fieldNumber: 8)
     } }()
+    if self.isEmailVerified != false {
+      try visitor.visitSingularBoolField(value: self.isEmailVerified, fieldNumber: 9)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -195,6 +202,7 @@ extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
     if lhs.userType != rhs.userType {return false}
     if lhs.deviceIds != rhs.deviceIds {return false}
     if lhs._imageURL != rhs._imageURL {return false}
+    if lhs.isEmailVerified != rhs.isEmailVerified {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

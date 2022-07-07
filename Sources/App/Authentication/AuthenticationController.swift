@@ -71,9 +71,9 @@ struct AuthenticationController: RouteCollection {
             throw AuthenticationError.invalidEmailOrPassword
         }
 
-        guard user.isEmailVerified else {
-            throw AuthenticationError.emailIsNotVerified
-        }
+//        guard user.isEmailVerified else {
+//            throw AuthenticationError.emailIsNotVerified
+//        }
 
         guard try req.password.verify(loginRequest.password, created: user.password ?? "") else {
             throw AuthenticationError.invalidEmailOrPassword
