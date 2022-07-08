@@ -81,7 +81,7 @@ public struct Content {
   /// Clears the value of `description_p`. Subsequent reads from it will return its default value.
   public mutating func clearDescription_p() {_uniqueStorage()._description_p = nil}
 
-  public var category: String {
+  public var category: ContentCategory {
     get {return _storage._category}
     set {_uniqueStorage()._category = newValue}
   }
@@ -122,7 +122,7 @@ extension Content: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
     var _likesCount: Int32 = 0
     var _isLikedByMe: Bool = false
     var _description_p: String? = nil
-    var _category: String = String()
+    var _category: ContentCategory = .other
 
     static let defaultInstance = _StorageClass()
 
@@ -164,7 +164,7 @@ extension Content: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
         case 6: try { try decoder.decodeSingularInt32Field(value: &_storage._likesCount) }()
         case 7: try { try decoder.decodeSingularBoolField(value: &_storage._isLikedByMe) }()
         case 8: try { try decoder.decodeSingularStringField(value: &_storage._description_p) }()
-        case 9: try { try decoder.decodeSingularStringField(value: &_storage._category) }()
+        case 9: try { try decoder.decodeSingularEnumField(value: &_storage._category) }()
         default: break
         }
       }
@@ -201,8 +201,8 @@ extension Content: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
       try { if let v = _storage._description_p {
         try visitor.visitSingularStringField(value: v, fieldNumber: 8)
       } }()
-      if !_storage._category.isEmpty {
-        try visitor.visitSingularStringField(value: _storage._category, fieldNumber: 9)
+      if _storage._category != .other {
+        try visitor.visitSingularEnumField(value: _storage._category, fieldNumber: 9)
       }
     }
     try unknownFields.traverse(visitor: &visitor)

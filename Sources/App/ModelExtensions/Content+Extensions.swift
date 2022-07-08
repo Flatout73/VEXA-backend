@@ -18,7 +18,7 @@ extension ContentModel {
         content.imageURL = imageURL ?? ""
         content.videoURL = videoURL ?? ""
         content.description_p = description
-        content.category = category.rawValue
+        content.category = category.request
         try await self.$likes.load(on: database)
         content.likesCount = Int32(likes.count)
         if let student = student {
@@ -40,9 +40,61 @@ extension Protobuf.CreateContentRequest {
         content.videoURL = videoURL
         content.title = title
         content.description = description_p
-        content.category = Category(rawValue: category) ?? .other
+        content.category = category.model
         try await ambassador?.$contents.create(content, on: db)
 
         return content
+    }
+}
+
+extension ContentCategory {
+    var model: Category {
+        switch self {
+        case .other:
+            return .other
+        case .housing:
+            return .housing
+        case .dining:
+            return .dining
+        case .sportsAndRecreation:
+            return .sportsAndRecreation
+        case .academics:
+            return .academics
+        case .healthAndSafety:
+            return .healthAndSafety
+        case .career:
+            return .career
+        case .campusEvents:
+            return .campusEvents
+        case .campusClubs:
+            return .campusClubs
+        case .UNRECOGNIZED(let int):
+            return .other
+        }
+    }
+}
+
+extension Category {
+    var request: ContentCategory {
+        switch self {
+        case .other:
+            return .other
+        case .housing:
+            return .housing
+        case .dining:
+            return .dining
+        case .sportsAndRecreation:
+            return .sportsAndRecreation
+        case .academics:
+            return .academics
+        case .healthAndSafety:
+            return .healthAndSafety
+        case .career:
+            return .career
+        case .campusEvents:
+            return .campusEvents
+        case .campusClubs:
+            return .campusClubs
+        }
     }
 }

@@ -93,7 +93,8 @@ struct ContentController: RouteCollection {
     }
 
     func search(req: Request) async throws -> Proto {
-        let query = try req.query.get(String.self, at: "query")
+        let query = try? req.query.get(String.self, at: "query")
+        let category = try? req.query.get(Category.self, at: "category")
 
         let student: StudentModel? = await fetchStudent(for: req)
 
@@ -102,14 +103,22 @@ struct ContentController: RouteCollection {
             .join(AmbassadorModel.self, on: \ContentModel.$ambassador.$id == \AmbassadorModel.$id)
             .join(UserModel.self, on: \AmbassadorModel.$user.$id == \UserModel.$id)
             .join(UniversityModel.self, on: \AmbassadorModel.$university.$id == \UniversityModel.$id)
-            .group(.or, { group in
-            group.filter(\ContentModel.$title ~~ query)
-                .filter(\ContentModel.$description ~~ query)
-                .filter(\ContentModel.$category == (Category(rawValue: query) ?? .other))
-                .filter(UserModel.self, \UserModel.$firstName ~~ query)
-                .filter(UserModel.self, \UserModel.$lastName ~~ query)
-                .filter(UniversityModel.self, \UniversityModel.$name ~~ query)
-        })
+            .group(.and, { group in
+                if let query = query {
+                    group.group(.or, { group in
+                        group.filter(\ContentModel.$title ~~ query)
+                            .filter(\ContentModel.$description ~~ query)
+                            .filter(UserModel.self, \UserModel.$firstName ~~ query)
+                            .filter(UserModel.self, \UserModel.$lastName ~~ query)
+                            .filter(UniversityModel.self, \UniversityModel.$name ~~ query)
+                    })
+                }
+
+                if let category = category {
+                    group
+                        .filter(\ContentModel.$category == (category))
+                }
+            })
             .all()
         {
             let vm = try await content.requestContent(on: req.db, for: student)
@@ -124,21 +133,5 @@ struct ContentController: RouteCollection {
         }
         try await content.delete(on: req.db)
         return .ok
-    }
-
-    private func fetchStudent(for req: Request) async -> StudentModel? {
-        do {
-            let payload = try req.auth.require(SessionJWTToken.self)
-
-            guard let user = try await req.users
-                .find(id: payload.userID) else {
-                throw AuthenticationError.userNotFound
-            }
-
-            try await user.$student.load(on: req.db)
-            return user.student
-        } catch {
-            return nil
-        }
     }
 }

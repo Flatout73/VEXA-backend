@@ -15,6 +15,7 @@ struct UniversityController: RouteCollection {
         let universities = routes.grouped("universities")
         universities.get(use: fetchAll)
         universities.get(":x", use: index)
+        universities.get("search", use: search)
         universities.post(use: create)
 
         universities.group(UserAuthenticator(), configure: { group in
@@ -114,6 +115,32 @@ struct UniversityController: RouteCollection {
         try await uni.save(on: req.db)
 
         return .ok
+    }
+
+    func search(req: Request) async throws -> Proto {
+        let query = try req.query.get(String.self, at: "query")
+
+        var array = ArrayResponse()
+        for uni in try await UniversityModel.query(on: req.db)
+            //.join(AmbassadorModel.self, on: \UniversityModel.$ambassadors.idValue == \AmbassadorModel.$id)
+            //.join(UserModel.self, on: \AmbassadorModel.$user.$id == \UserModel.$id)
+            //.join(ContentModel.self, on: \AmbassadorModel.$contents.$id == \ContentModel.$id)
+            .group(.or, { group in
+            group.filter(\UniversityModel.$name ~~ query)
+                    //.filter("tags", .subset(inverse: true), query)
+                    //.filter(\UniversityModel.$tags, .custom(<#T##Any#>), query)
+                    .filter(\UniversityModel.$exams ~~ query)
+                    .filter(\UniversityModel.$requirementsDescription ~~ query)
+               // .filter(UserModel.self, \UserModel.$firstName ~~ query)
+               // .filter(UserModel.self, \UserModel.$lastName ~~ query)
+               // .filter(ContentModel.self, \ContentModel.$title ~~ query)
+        })
+            .all()
+        {
+            let vm = try await uni.requestUni()
+            array.content.append(try Google_Protobuf_Any(message: vm))
+        }
+        return Proto(from: array)
     }
 }
 

@@ -54,7 +54,7 @@ public struct CreateContentRequest {
   /// Clears the value of `description_p`. Subsequent reads from it will return its default value.
   public mutating func clearDescription_p() {self._description_p = nil}
 
-  public var category: String = String()
+  public var category: ContentCategory = .other
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -91,7 +91,7 @@ extension CreateContentRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
       case 4: try { try decoder.decodeSingularStringField(value: &self._videoURL) }()
       case 5: try { try decoder.decodeSingularStringField(value: &self._imageURL) }()
       case 6: try { try decoder.decodeSingularStringField(value: &self._description_p) }()
-      case 7: try { try decoder.decodeSingularStringField(value: &self.category) }()
+      case 7: try { try decoder.decodeSingularEnumField(value: &self.category) }()
       default: break
       }
     }
@@ -114,8 +114,8 @@ extension CreateContentRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     try { if let v = self._description_p {
       try visitor.visitSingularStringField(value: v, fieldNumber: 6)
     } }()
-    if !self.category.isEmpty {
-      try visitor.visitSingularStringField(value: self.category, fieldNumber: 7)
+    if self.category != .other {
+      try visitor.visitSingularEnumField(value: self.category, fieldNumber: 7)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
