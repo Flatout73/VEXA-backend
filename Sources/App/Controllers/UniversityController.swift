@@ -128,7 +128,8 @@ struct UniversityController: RouteCollection {
             .group(.or, { group in
             group.filter(\UniversityModel.$name ~~ query)
                     //.filter("tags", .subset(inverse: true), query)
-                    //.filter(\UniversityModel.$tags, .custom(<#T##Any#>), query)
+                    .filter(DatabaseQuery.Field.path(["tags"], schema: "universities"), .custom("&&"), DatabaseQuery.Value.custom("'{\"\(query)\"}'"))
+                    //.filter(.custom("SELECT * FROM universities WHERE tags = ANY(\(query);"))
                     .filter(\UniversityModel.$exams ~~ query)
                     .filter(\UniversityModel.$requirementsDescription ~~ query)
                // .filter(UserModel.self, \UserModel.$firstName ~~ query)
