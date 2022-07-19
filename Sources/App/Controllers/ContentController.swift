@@ -107,7 +107,7 @@ struct ContentController: RouteCollection {
                 if let query = query {
                     group.group(.or, { group in
                         group.filter(\ContentModel.$title ~~ query)
-                            .filter(\ContentModel.$description ~~ query)
+                            .filter(\ContentModel.$contentDescription ~~ query)
                             .filter(UserModel.self, \UserModel.$firstName ~~ query)
                             .filter(UserModel.self, \UserModel.$lastName ~~ query)
                             .filter(UniversityModel.self, \UniversityModel.$name ~~ query)

@@ -32,7 +32,7 @@ final class ContentModel: Model, Vapor.Content {
     @Field(key: "title")
     var title: String
     @OptionalField(key: "description")
-    var description: String?
+    var contentDescription: String?
     @OptionalField(key: "videoURL")
     var videoURL: String?
     @OptionalField(key: "imageURL")

@@ -17,7 +17,7 @@ extension ContentModel {
         content.title = title ?? ""
         content.imageURL = imageURL ?? ""
         content.videoURL = videoURL ?? ""
-        content.description_p = description
+        content.description_p = self.contentDescription ?? ""
         content.category = category.request
         try await self.$likes.load(on: database)
         content.likesCount = Int32(likes.count)
@@ -39,7 +39,7 @@ extension Protobuf.CreateContentRequest {
         content.imageURL = imageURL
         content.videoURL = videoURL
         content.title = title
-        content.description = description_p
+        content.contentDescription = description_p
         content.category = category.model
         try await ambassador?.$contents.create(content, on: db)
 
