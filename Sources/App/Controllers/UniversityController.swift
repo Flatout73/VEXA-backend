@@ -119,24 +119,20 @@ struct UniversityController: RouteCollection {
 
     func search(req: Request) async throws -> Proto {
         let query = try req.query.get(String.self, at: "query")
-
+        
         var array = ArrayResponse()
         for uni in try await UniversityModel.query(on: req.db)
-            //.join(AmbassadorModel.self, on: \UniversityModel.$ambassadors.idValue == \AmbassadorModel.$id)
-            //.join(UserModel.self, on: \AmbassadorModel.$user.$id == \UserModel.$id)
-            //.join(ContentModel.self, on: \AmbassadorModel.$contents.$id == \ContentModel.$id)
             .group(.or, { group in
-            group.filter(\UniversityModel.$name ~~ query)
-                    //.filter("tags", .subset(inverse: true), query)
+                group.filter(\UniversityModel.$name ~~ query)
                     .filter(DatabaseQuery.Field.path(["tags"], schema: "universities"), .custom("&&"), DatabaseQuery.Value.custom("'{\"\(query)\"}'"))
-                    //.filter(.custom("SELECT * FROM universities WHERE tags = ANY(\(query);"))
                     .filter(\UniversityModel.$exams ~~ query)
                     .filter(\UniversityModel.$requirementsDescription ~~ query)
-               // .filter(UserModel.self, \UserModel.$firstName ~~ query)
-               // .filter(UserModel.self, \UserModel.$lastName ~~ query)
-               // .filter(ContentModel.self, \ContentModel.$title ~~ query)
-        })
-            .all()
+                    .filter(\UniversityModel.$applyLink ~~ query)
+                    .filter(\UniversityModel.$facties ~~ query)
+                    .filter(\UniversityModel.$phone ~~ query)
+                    .filter(\UniversityModel.$address ~~ query)
+            })
+                .all()
         {
             let vm = try await uni.requestUni()
             array.content.append(try Google_Protobuf_Any(message: vm))
