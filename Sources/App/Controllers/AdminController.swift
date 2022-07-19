@@ -11,14 +11,17 @@ import Protobuf
 
 struct AdminController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
-        let users = routes.grouped("users")
+        let admin = routes.grouped("users")
 
         // Authentication required
-        users.group(UserAuthenticator()) { authenticated in
+        admin.group(UserAuthenticator()) { authenticated in
             authenticated.get("me", use: getCurrentUser)
 
             authenticated.get(":x", use: index)
-            authenticated.post(use: create)
+
+            // Only for resting purpose
+            //authenticated.post(use: create)
+
             authenticated.group(":userID") { todo in
                 todo.delete(use: delete)
             }

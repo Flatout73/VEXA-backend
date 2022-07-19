@@ -8,6 +8,7 @@
 import Foundation
 import SwiftProtobuf
 import Protobuf
+import FluentKit
 
 extension UniversityModel {
     func requestUni() throws -> University {
@@ -51,8 +52,14 @@ extension UniversityModel {
 }
 
 extension University {
-    var viewModel: UniversityModel {
-        let uni = UniversityModel()
+    func model(for database: Database) async throws -> UniversityModel {
+        var uni: UniversityModel
+        if let uuid = UUID(uuidString: id),
+            let existingUni = try await UniversityModel.find(uuid, on: database) {
+            uni = existingUni
+        } else {
+            uni = UniversityModel()
+        }
         uni.name = name
         uni.photos = photos
         uni.address = address

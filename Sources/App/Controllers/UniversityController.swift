@@ -16,7 +16,7 @@ struct UniversityController: RouteCollection {
         universities.get(use: fetchAll)
         universities.get(":x", use: index)
         universities.get("search", use: search)
-        universities.post(use: create)
+        universities.post(use: createOrUpdate)
 
         universities.group(UserAuthenticator(), configure: { group in
             group.post([":uniID", "follow"], use: follow)
@@ -49,11 +49,11 @@ struct UniversityController: RouteCollection {
         return Proto(from: try Google_Protobuf_Any(message: uni))
     }
 
-    func create(req: Request) async throws -> UniversityModel {
+    func createOrUpdate(req: Request) async throws -> UniversityModel {
         guard let content = req.body.string else {
             throw Abort(.badRequest)
         }
-        let uniVM = try University(jsonString: content).viewModel
+        let uniVM = try await University(jsonString: content).model(for: req.db)
         try await uniVM.save(on: req.db)
         return uniVM
     }
