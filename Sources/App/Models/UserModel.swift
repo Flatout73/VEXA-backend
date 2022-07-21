@@ -26,6 +26,9 @@ final class UserModel: Content, Model, Authenticatable {
     @OptionalField(key: "password")
     var password: String?
 
+    @OptionalField(key: "appleIdentifier")
+    var appleIdentifier: String?
+
     @Enum(key: "userType")
     var userType: UserType
     @Field(key: "isEmailVerified")

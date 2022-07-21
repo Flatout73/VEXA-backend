@@ -59,6 +59,7 @@ struct AuthenticationController: RouteCollection {
         return createdUser
     }
 
+    // TODO: Check login with several devices
     private func login(_ req: Request) async throws -> Proto {
         //try LoginRequest.validate(req)
         guard let content = req.body.string else {

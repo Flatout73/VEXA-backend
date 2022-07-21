@@ -12,6 +12,10 @@ struct AppConfig {
     let apiURL: String
     let noReplyEmail: String
 
+    let applicationIdentifier: String
+    let servicesIdentifier: String
+    let redirectURL: String
+
     static var environment: AppConfig {
         guard
             let frontendURL = Environment.get("SITE_FRONTEND_URL"),
@@ -21,7 +25,11 @@ struct AppConfig {
                 fatalError("Please add app configuration to environment variables")
         }
 
-        return .init(frontendURL: frontendURL, apiURL: apiURL, noReplyEmail: noReplyEmail)
+        return .init(frontendURL: frontendURL, apiURL: apiURL, noReplyEmail: noReplyEmail,
+                     applicationIdentifier: Environment.get("SIWA_APPLICATION_IDENTIFIER")!,
+                     servicesIdentifier: Environment.get("SIWA_SERVICES_IDENTIFIER")!,
+                     redirectURL: Environment.get("SIWA_REDIRECT_URL")!
+        )
     }
 }
 
