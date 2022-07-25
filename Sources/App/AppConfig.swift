@@ -13,8 +13,8 @@ struct AppConfig {
     let noReplyEmail: String
 
     let applicationIdentifier: String
-    let servicesIdentifier: String
-    let redirectURL: String
+    //let servicesIdentifier: String
+    //let redirectURL: String
 
     static var environment: AppConfig {
         guard
@@ -26,9 +26,9 @@ struct AppConfig {
         }
 
         return .init(frontendURL: frontendURL, apiURL: apiURL, noReplyEmail: noReplyEmail,
-                     applicationIdentifier: Environment.get("SIWA_APPLICATION_IDENTIFIER")!,
-                     servicesIdentifier: Environment.get("SIWA_SERVICES_IDENTIFIER")!,
-                     redirectURL: Environment.get("SIWA_REDIRECT_URL")!
+                     applicationIdentifier: Environment.get("SIWA_APPLICATION_IDENTIFIER")!
+                    // servicesIdentifier: Environment.get("SIWA_SERVICES_IDENTIFIER")!,
+                     //redirectURL: Environment.get("SIWA_REDIRECT_URL")!
         )
     }
 }

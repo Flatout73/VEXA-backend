@@ -49,12 +49,22 @@ public struct SIWARequest {
 
   public var deviceID: String = String()
 
+  public var imageURL: String {
+    get {return _imageURL ?? String()}
+    set {_imageURL = newValue}
+  }
+  /// Returns true if `imageURL` has been explicitly set.
+  public var hasImageURL: Bool {return self._imageURL != nil}
+  /// Clears the value of `imageURL`. Subsequent reads from it will return its default value.
+  public mutating func clearImageURL() {self._imageURL = nil}
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
 
   fileprivate var _firstName: String? = nil
   fileprivate var _lastName: String? = nil
+  fileprivate var _imageURL: String? = nil
 }
 
 #if swift(>=5.5) && canImport(_Concurrency)
@@ -71,6 +81,7 @@ extension SIWARequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
     3: .same(proto: "appleIdentityToken"),
     4: .same(proto: "email"),
     5: .same(proto: "deviceID"),
+    6: .same(proto: "imageURL"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -84,6 +95,7 @@ extension SIWARequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
       case 3: try { try decoder.decodeSingularStringField(value: &self.appleIdentityToken) }()
       case 4: try { try decoder.decodeSingularStringField(value: &self.email) }()
       case 5: try { try decoder.decodeSingularStringField(value: &self.deviceID) }()
+      case 6: try { try decoder.decodeSingularStringField(value: &self._imageURL) }()
       default: break
       }
     }
@@ -109,6 +121,9 @@ extension SIWARequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
     if !self.deviceID.isEmpty {
       try visitor.visitSingularStringField(value: self.deviceID, fieldNumber: 5)
     }
+    try { if let v = self._imageURL {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 6)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -118,6 +133,7 @@ extension SIWARequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
     if lhs.appleIdentityToken != rhs.appleIdentityToken {return false}
     if lhs.email != rhs.email {return false}
     if lhs.deviceID != rhs.deviceID {return false}
+    if lhs._imageURL != rhs._imageURL {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

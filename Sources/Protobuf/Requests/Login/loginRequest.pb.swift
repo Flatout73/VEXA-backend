@@ -29,6 +29,8 @@ public struct LoginRequest {
 
   public var password: String = String()
 
+  public var deviceID: String = String()
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
@@ -45,6 +47,7 @@ extension LoginRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementat
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "email"),
     2: .same(proto: "password"),
+    3: .same(proto: "deviceID"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -55,6 +58,7 @@ extension LoginRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementat
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularStringField(value: &self.email) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self.password) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.deviceID) }()
       default: break
       }
     }
@@ -67,12 +71,16 @@ extension LoginRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementat
     if !self.password.isEmpty {
       try visitor.visitSingularStringField(value: self.password, fieldNumber: 2)
     }
+    if !self.deviceID.isEmpty {
+      try visitor.visitSingularStringField(value: self.deviceID, fieldNumber: 3)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   public static func ==(lhs: LoginRequest, rhs: LoginRequest) -> Bool {
     if lhs.email != rhs.email {return false}
     if lhs.password != rhs.password {return false}
+    if lhs.deviceID != rhs.deviceID {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

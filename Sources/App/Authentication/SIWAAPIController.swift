@@ -18,7 +18,7 @@ struct SIWAAPIController: RouteCollection {
         }
     }
 
-    func authHandler(req: Request) async throws -> UserModel {
+    func authHandler(req: Request) async throws -> Proto {
         guard let content = req.body.string else {
             throw AuthenticationError.invalidEmailOrPassword
         }
@@ -26,28 +26,45 @@ struct SIWAAPIController: RouteCollection {
         let request = try SIWARequest(jsonString: content)
 
         let appleIdentityToken = try await req.jwt.apple.verify(request.appleIdentityToken,
-                                                            applicationIdentifier: AppConfig.environment.applicationIdentifier)
+                                                                applicationIdentifier: AppConfig.environment.applicationIdentifier)
 
-        if let user = try await req.application.repositories
-            .users.findByAppleIdentifier(appleIdentityToken.subject.value) {
-            print("user", user)
+        let user: UserModel = try await {
+            if let user = try await req.application.repositories
+                .users.findByAppleIdentifier(appleIdentityToken.subject.value) {
+                print("user", user)
 
-            return user
-        } else {
-            let createdUser = UserModel(firstName: request.firstName ?? "John",
-                                        lastName: request.lastName ?? "Doe",
-                                        email: request.email,
-                                        imageURL: nil,
-                                        password: nil)
-            try await req.users
-                .create(createdUser)
+                return user
+            } else {
+                // TODO: Handle empy name and email
+                let createdUser = UserModel(firstName: request.firstName ?? "John",
+                                            lastName: request.lastName ?? "Doe",
+                                            email: request.email,
+                                            imageURL: nil,
+                                            password: nil)
+                try await req.users
+                    .create(createdUser)
 
-            createdUser.isEmailVerified = true
+                createdUser.isEmailVerified = true
 
-            try await createdUser.$student.create(StudentModel(), on: req.db)
+                try await createdUser.$student.create(StudentModel(), on: req.db)
 
-            return createdUser
-        }
+                return createdUser
+            }
+        }()
+
+        try await req.refreshTokens.delete(for: user.requireID())
+
+        let token = req.random.generate(bits: 256)
+        let refreshToken = try RefreshToken(token: SHA256.hash(token), userID: user.requireID())
+
+        try await req.refreshTokens
+            .create(refreshToken)
+
+        var response = Protobuf.LoginResponse()
+        response.user = try await user.requestUser(for: req.db)
+        response.accessToken = try req.jwt.sign(SessionJWTToken(user: user))
+        response.refreshToken = token
+        return Proto(from: response)
   }
 
 //  static func signUp(
