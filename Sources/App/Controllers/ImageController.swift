@@ -23,7 +23,8 @@ struct ImageController: RouteCollection {
         var urls: [String] = []
 
         for file in files where file.data.readableBytes > 0 {
-            let fileName = prefix + file.filename
+            // TODO: Enable back prefix
+            let fileName = /*prefix +*/ file.filename
             let path = req.application.directory.publicDirectory + fileName
             //let isImage = ["png", "jpeg", "jpg", "gif"].contains(file.extension?.lowercased())
             try await req.fileio.writeFile(file.data, at: path)

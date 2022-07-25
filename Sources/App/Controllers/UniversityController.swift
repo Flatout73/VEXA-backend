@@ -128,7 +128,7 @@ struct UniversityController: RouteCollection {
                     .filter(\UniversityModel.$exams ~~ query)
                     .filter(\UniversityModel.$requirementsDescription ~~ query)
                     .filter(\UniversityModel.$applyLink ~~ query)
-                    .filter(\UniversityModel.$facties ~~ query)
+                    .filter(\UniversityModel.$facts ~~ query)
                     .filter(\UniversityModel.$phone ~~ query)
                     .filter(\UniversityModel.$address ~~ query)
             })

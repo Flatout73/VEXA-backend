@@ -88,14 +88,14 @@ public struct University {
   /// Clears the value of `requirementsDescription`. Subsequent reads from it will return its default value.
   public mutating func clearRequirementsDescription() {_uniqueStorage()._requirementsDescription = nil}
 
-  public var facties: String {
-    get {return _storage._facties ?? String()}
-    set {_uniqueStorage()._facties = newValue}
+  public var facts: String {
+    get {return _storage._facts ?? String()}
+    set {_uniqueStorage()._facts = newValue}
   }
-  /// Returns true if `facties` has been explicitly set.
-  public var hasFacties: Bool {return _storage._facties != nil}
-  /// Clears the value of `facties`. Subsequent reads from it will return its default value.
-  public mutating func clearFacties() {_uniqueStorage()._facties = nil}
+  /// Returns true if `facts` has been explicitly set.
+  public var hasFacts: Bool {return _storage._facts != nil}
+  /// Clears the value of `facts`. Subsequent reads from it will return its default value.
+  public mutating func clearFacts() {_uniqueStorage()._facts = nil}
 
   public var latitude: Double {
     get {return _storage._latitude}
@@ -205,7 +205,7 @@ extension University: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
     9: .same(proto: "gpa"),
     10: .same(proto: "exams"),
     11: .same(proto: "requirementsDescription"),
-    12: .same(proto: "facties"),
+    12: .same(proto: "facts"),
     13: .same(proto: "latitude"),
     14: .same(proto: "longitude"),
     15: .same(proto: "phone"),
@@ -225,7 +225,7 @@ extension University: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
     var _gpa: Double = 0
     var _exams: String = String()
     var _requirementsDescription: String? = nil
-    var _facties: String? = nil
+    var _facts: String? = nil
     var _latitude: Double = 0
     var _longitude: Double = 0
     var _phone: String = String()
@@ -248,7 +248,7 @@ extension University: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
       _gpa = source._gpa
       _exams = source._exams
       _requirementsDescription = source._requirementsDescription
-      _facties = source._facties
+      _facts = source._facts
       _latitude = source._latitude
       _longitude = source._longitude
       _phone = source._phone
@@ -283,7 +283,7 @@ extension University: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
         case 9: try { try decoder.decodeSingularDoubleField(value: &_storage._gpa) }()
         case 10: try { try decoder.decodeSingularStringField(value: &_storage._exams) }()
         case 11: try { try decoder.decodeSingularStringField(value: &_storage._requirementsDescription) }()
-        case 12: try { try decoder.decodeSingularStringField(value: &_storage._facties) }()
+        case 12: try { try decoder.decodeSingularStringField(value: &_storage._facts) }()
         case 13: try { try decoder.decodeSingularDoubleField(value: &_storage._latitude) }()
         case 14: try { try decoder.decodeSingularDoubleField(value: &_storage._longitude) }()
         case 15: try { try decoder.decodeSingularStringField(value: &_storage._phone) }()
@@ -334,7 +334,7 @@ extension University: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
       try { if let v = _storage._requirementsDescription {
         try visitor.visitSingularStringField(value: v, fieldNumber: 11)
       } }()
-      try { if let v = _storage._facties {
+      try { if let v = _storage._facts {
         try visitor.visitSingularStringField(value: v, fieldNumber: 12)
       } }()
       if _storage._latitude != 0 {
@@ -372,7 +372,7 @@ extension University: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
         if _storage._gpa != rhs_storage._gpa {return false}
         if _storage._exams != rhs_storage._exams {return false}
         if _storage._requirementsDescription != rhs_storage._requirementsDescription {return false}
-        if _storage._facties != rhs_storage._facties {return false}
+        if _storage._facts != rhs_storage._facts {return false}
         if _storage._latitude != rhs_storage._latitude {return false}
         if _storage._longitude != rhs_storage._longitude {return false}
         if _storage._phone != rhs_storage._phone {return false}

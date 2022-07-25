@@ -19,7 +19,7 @@ extension UniversityModel {
         uni.applyLink = applyLink
         uni.exams = exams
         uni.requirementsDescription = requirementsDescription ?? ""
-        uni.facties = facties ?? ""
+        uni.facts = facts ?? ""
         uni.gpa = gpa
         uni.studentsCount = Int32(studentsCount)
         uni.latitude = latitude
@@ -66,7 +66,7 @@ extension University {
         uni.applyLink = applyLink
         uni.exams = exams
         uni.requirementsDescription = requirementsDescription
-        uni.facties = facties
+        uni.facts = facts
         uni.gpa = gpa
         uni.studentsCount = Int(studentsCount)
         uni.latitude = latitude
