@@ -14,6 +14,7 @@ protocol UserRepository: Repository {
     func all() async throws -> [UserModel]
     func find(id: UUID?) async throws -> UserModel?
     func find(email: String) async throws -> UserModel?
+    func findByAppleIdentifier(_ identifier: String) async throws -> UserModel?
     func setAsync<Field>(_ field: KeyPath<UserModel, Field>, to value: Field.Value, for userID: UUID) async throws where Field: QueryableProperty, Field.Model == UserModel
     func set<Field>(_ field: KeyPath<UserModel, Field>, to value: Field.Value, for userID: UUID) -> EventLoopFuture<Void> where Field: QueryableProperty, Field.Model == UserModel
     func count() async throws -> Int
@@ -43,6 +44,12 @@ struct DatabaseUserRepository: UserRepository, DatabaseRepository {
     func find(email: String) async throws -> UserModel? {
         return try await UserModel.query(on: database)
             .filter(\.$email == email)
+            .first()
+    }
+
+    func findByAppleIdentifier(_ identifier: String) async throws -> UserModel? {
+        return try await UserModel.query(on: database)
+            .filter(\.$appleIdentifier == identifier)
             .first()
     }
 
