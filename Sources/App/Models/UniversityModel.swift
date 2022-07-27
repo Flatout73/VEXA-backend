@@ -35,7 +35,7 @@ final class UniversityModel: Model {
     var exams: String
     @OptionalField(key: "requirementsDescription")
     var requirementsDescription: String?
-    @OptionalField(key: "facties")
+    @OptionalField(key: "facts")
     var facts: String?
     @Field(key: "latitude")
     var latitude: Double

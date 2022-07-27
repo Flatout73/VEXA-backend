@@ -19,6 +19,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/jwt.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/queues.git", from: "1.0.0"),
         .package(url: "https://github.com/vapor/queues-redis-driver.git", from: "1.0.0-rc.1"),
+        .package(url: "https://github.com/GetStream/stream-chat-vapor-swift.git", from: "0.1.0"),
 
         // Mailgun
         .package(url: "https://github.com/vapor-community/mailgun.git", from: "5.0.0")
@@ -37,6 +38,7 @@ let package = Package(
                 .product(name: "JWT", package: "jwt"),
                 .product(name: "QueuesRedisDriver", package: "queues-redis-driver"),
                 .product(name: "Mailgun", package: "mailgun"),
+                .product(name: "StreamSDKVapor", package: "stream-chat-vapor-swift"),
                 "Protobuf"
             ],
             swiftSettings: [

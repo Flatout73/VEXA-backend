@@ -181,6 +181,15 @@
       }
     },
     {
+      "identity" : "stream-chat-vapor-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/GetStream/stream-chat-vapor-swift.git",
+      "state" : {
+        "revision" : "f6f18495da2c0f3b3b2137ea5ebd025891c7317d",
+        "version" : "0.1.0"
+      }
+    },
+    {
       "identity" : "swift-backtrace",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-backtrace.git",

@@ -38,6 +38,8 @@ public struct LoginResponse {
 
   public var refreshToken: String = String()
 
+  public var streamToken: String = String()
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
@@ -57,6 +59,7 @@ extension LoginResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
     1: .same(proto: "user"),
     2: .same(proto: "accessToken"),
     3: .same(proto: "refreshToken"),
+    4: .same(proto: "streamToken"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -68,6 +71,7 @@ extension LoginResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
       case 1: try { try decoder.decodeSingularMessageField(value: &self._user) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self.accessToken) }()
       case 3: try { try decoder.decodeSingularStringField(value: &self.refreshToken) }()
+      case 4: try { try decoder.decodeSingularStringField(value: &self.streamToken) }()
       default: break
       }
     }
@@ -87,6 +91,9 @@ extension LoginResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
     if !self.refreshToken.isEmpty {
       try visitor.visitSingularStringField(value: self.refreshToken, fieldNumber: 3)
     }
+    if !self.streamToken.isEmpty {
+      try visitor.visitSingularStringField(value: self.streamToken, fieldNumber: 4)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -94,6 +101,7 @@ extension LoginResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
     if lhs._user != rhs._user {return false}
     if lhs.accessToken != rhs.accessToken {return false}
     if lhs.refreshToken != rhs.refreshToken {return false}
+    if lhs.streamToken != rhs.streamToken {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

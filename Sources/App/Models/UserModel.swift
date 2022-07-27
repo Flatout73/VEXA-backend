@@ -8,6 +8,12 @@ enum UserType: String, Codable {
     case admin
 }
 
+enum EmailVerificationType: String, Codable {
+    case manually
+    case google
+    case apple
+}
+
 final class UserModel: Content, Model, Authenticatable {
 
     static let schema = "users"
@@ -31,8 +37,8 @@ final class UserModel: Content, Model, Authenticatable {
 
     @Enum(key: "userType")
     var userType: UserType
-    @Field(key: "isEmailVerified")
-    var isEmailVerified: Bool
+    @OptionalField(key: "emailVerified")
+    var emailVerified: EmailVerificationType?
 
     @OptionalChild(for: \AmbassadorModel.$user)
     var ambassador: AmbassadorModel?
@@ -50,7 +56,7 @@ final class UserModel: Content, Model, Authenticatable {
     init(userID: UUID? = nil, firstName: String, lastName: String, email: String,
          imageURL: String?,
          password: String?, userType: UserType = .student,
-         isEmailVerified: Bool = false) {
+         emailVerified: EmailVerificationType? = nil) {
         self.id = userID
         self.firstName = firstName
         self.lastName = lastName
@@ -58,6 +64,6 @@ final class UserModel: Content, Model, Authenticatable {
         self.imageURL = imageURL
         self.password = password
         self.userType = userType
-        self.isEmailVerified = isEmailVerified
+        self.emailVerified = emailVerified
     }
 }

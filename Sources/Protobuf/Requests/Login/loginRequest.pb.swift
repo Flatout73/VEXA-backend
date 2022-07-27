@@ -27,17 +27,71 @@ public struct LoginRequest {
 
   public var email: String = String()
 
-  public var password: String = String()
-
   public var deviceID: String = String()
 
+  public var token: LoginRequest.OneOf_Token? = nil
+
+  public var password: String {
+    get {
+      if case .password(let v)? = token {return v}
+      return String()
+    }
+    set {token = .password(newValue)}
+  }
+
+  public var siwa: SIWARequest {
+    get {
+      if case .siwa(let v)? = token {return v}
+      return SIWARequest()
+    }
+    set {token = .siwa(newValue)}
+  }
+
+  public var google: GoogleRequest {
+    get {
+      if case .google(let v)? = token {return v}
+      return GoogleRequest()
+    }
+    set {token = .google(newValue)}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public enum OneOf_Token: Equatable {
+    case password(String)
+    case siwa(SIWARequest)
+    case google(GoogleRequest)
+
+  #if !swift(>=4.1)
+    public static func ==(lhs: LoginRequest.OneOf_Token, rhs: LoginRequest.OneOf_Token) -> Bool {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch (lhs, rhs) {
+      case (.password, .password): return {
+        guard case .password(let l) = lhs, case .password(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
+      case (.siwa, .siwa): return {
+        guard case .siwa(let l) = lhs, case .siwa(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
+      case (.google, .google): return {
+        guard case .google(let l) = lhs, case .google(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
+      default: return false
+      }
+    }
+  #endif
+  }
 
   public init() {}
 }
 
 #if swift(>=5.5) && canImport(_Concurrency)
 extension LoginRequest: @unchecked Sendable {}
+extension LoginRequest.OneOf_Token: @unchecked Sendable {}
 #endif  // swift(>=5.5) && canImport(_Concurrency)
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
@@ -46,8 +100,10 @@ extension LoginRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementat
   public static let protoMessageName: String = "LoginRequest"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "email"),
-    2: .same(proto: "password"),
-    3: .same(proto: "deviceID"),
+    2: .same(proto: "deviceID"),
+    3: .same(proto: "password"),
+    4: .same(proto: "siwa"),
+    5: .same(proto: "google"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -57,30 +113,79 @@ extension LoginRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementat
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularStringField(value: &self.email) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.password) }()
-      case 3: try { try decoder.decodeSingularStringField(value: &self.deviceID) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.deviceID) }()
+      case 3: try {
+        var v: String?
+        try decoder.decodeSingularStringField(value: &v)
+        if let v = v {
+          if self.token != nil {try decoder.handleConflictingOneOf()}
+          self.token = .password(v)
+        }
+      }()
+      case 4: try {
+        var v: SIWARequest?
+        var hadOneofValue = false
+        if let current = self.token {
+          hadOneofValue = true
+          if case .siwa(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.token = .siwa(v)
+        }
+      }()
+      case 5: try {
+        var v: GoogleRequest?
+        var hadOneofValue = false
+        if let current = self.token {
+          hadOneofValue = true
+          if case .google(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.token = .google(v)
+        }
+      }()
       default: break
       }
     }
   }
 
   public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     if !self.email.isEmpty {
       try visitor.visitSingularStringField(value: self.email, fieldNumber: 1)
     }
-    if !self.password.isEmpty {
-      try visitor.visitSingularStringField(value: self.password, fieldNumber: 2)
-    }
     if !self.deviceID.isEmpty {
-      try visitor.visitSingularStringField(value: self.deviceID, fieldNumber: 3)
+      try visitor.visitSingularStringField(value: self.deviceID, fieldNumber: 2)
+    }
+    switch self.token {
+    case .password?: try {
+      guard case .password(let v)? = self.token else { preconditionFailure() }
+      try visitor.visitSingularStringField(value: v, fieldNumber: 3)
+    }()
+    case .siwa?: try {
+      guard case .siwa(let v)? = self.token else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
+    }()
+    case .google?: try {
+      guard case .google(let v)? = self.token else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 5)
+    }()
+    case nil: break
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   public static func ==(lhs: LoginRequest, rhs: LoginRequest) -> Bool {
     if lhs.email != rhs.email {return false}
-    if lhs.password != rhs.password {return false}
     if lhs.deviceID != rhs.deviceID {return false}
+    if lhs.token != rhs.token {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

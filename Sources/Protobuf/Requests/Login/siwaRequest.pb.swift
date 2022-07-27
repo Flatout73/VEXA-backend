@@ -45,10 +45,6 @@ public struct SIWARequest {
 
   public var appleIdentityToken: String = String()
 
-  public var email: String = String()
-
-  public var deviceID: String = String()
-
   public var imageURL: String {
     get {return _imageURL ?? String()}
     set {_imageURL = newValue}
@@ -79,8 +75,6 @@ extension SIWARequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
     1: .same(proto: "firstName"),
     2: .same(proto: "lastName"),
     3: .same(proto: "appleIdentityToken"),
-    4: .same(proto: "email"),
-    5: .same(proto: "deviceID"),
     6: .same(proto: "imageURL"),
   ]
 
@@ -93,8 +87,6 @@ extension SIWARequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
       case 1: try { try decoder.decodeSingularStringField(value: &self._firstName) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self._lastName) }()
       case 3: try { try decoder.decodeSingularStringField(value: &self.appleIdentityToken) }()
-      case 4: try { try decoder.decodeSingularStringField(value: &self.email) }()
-      case 5: try { try decoder.decodeSingularStringField(value: &self.deviceID) }()
       case 6: try { try decoder.decodeSingularStringField(value: &self._imageURL) }()
       default: break
       }
@@ -115,12 +107,6 @@ extension SIWARequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
     if !self.appleIdentityToken.isEmpty {
       try visitor.visitSingularStringField(value: self.appleIdentityToken, fieldNumber: 3)
     }
-    if !self.email.isEmpty {
-      try visitor.visitSingularStringField(value: self.email, fieldNumber: 4)
-    }
-    if !self.deviceID.isEmpty {
-      try visitor.visitSingularStringField(value: self.deviceID, fieldNumber: 5)
-    }
     try { if let v = self._imageURL {
       try visitor.visitSingularStringField(value: v, fieldNumber: 6)
     } }()
@@ -131,8 +117,6 @@ extension SIWARequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
     if lhs._firstName != rhs._firstName {return false}
     if lhs._lastName != rhs._lastName {return false}
     if lhs.appleIdentityToken != rhs.appleIdentityToken {return false}
-    if lhs.email != rhs.email {return false}
-    if lhs.deviceID != rhs.deviceID {return false}
     if lhs._imageURL != rhs._imageURL {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true

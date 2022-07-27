@@ -20,7 +20,7 @@ struct CreateUniversity: AsyncMigration {
             .field("gpa", .double)
             .field("exams", .string)
             .field("requirementsDescription", .string)
-            .field("facties", .string)
+            .field("facts", .string)
             .field("latitude", .double, .required)
             .field("longitude", .double, .required)
             .field("phone", .string, .required)

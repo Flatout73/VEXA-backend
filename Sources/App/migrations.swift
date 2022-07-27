@@ -18,7 +18,7 @@ func migrations(_ app: Application) throws {
                          imageURL: nil,
                          password: pass,
                          userType: .admin,
-                         isEmailVerified: true)
+                         emailVerified: .manually)
 
     Task {
         try await user.save(on: app.db)

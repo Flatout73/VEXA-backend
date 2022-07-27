@@ -10,7 +10,7 @@ struct CreateUser: AsyncMigration {
             .field("password", .string)
             .field("imageURL", .string)
             .field("userType", .string, .required)
-            .field("isEmailVerified", .bool)
+            .field("emailVerified", .string)
             .field("appleIdentifier", .string)
             .unique(on: "email")
             .create()

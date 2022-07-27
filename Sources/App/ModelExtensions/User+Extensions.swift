@@ -23,7 +23,7 @@ extension UserModel {
             user.userType = self.userType.requestType
             try await self.$devices.load(on: database)
             user.deviceIds = self.devices.compactMap({ $0.id?.uuidString })
-            user.isEmailVerified = isEmailVerified
+            user.isEmailVerified = emailVerified != nil
             return user
         } else {
             throw AuthenticationError.userNotFound
@@ -38,7 +38,7 @@ extension User {
                              email: self.email,
                              imageURL: self.imageURL,
                              password: self.password)
-        user.isEmailVerified = isEmailVerified
+        user.emailVerified = isEmailVerified ? .manually : nil
         let devices: [DeviceModel] = self.deviceIds.map {
             let device = DeviceModel()
             device.id = UUID($0)

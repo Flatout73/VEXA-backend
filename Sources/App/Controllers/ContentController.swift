@@ -31,7 +31,7 @@ struct ContentController: RouteCollection {
     }
 
     func fetchAll(req: Request) async throws -> Proto {
-        let student: StudentModel? = await fetchStudent(for: req)
+        let student: StudentModel? = await req.fetchStudent()
 
         var array = ArrayResponse()
         for content in try await ContentModel.query(on: req.db).all() {
@@ -96,7 +96,7 @@ struct ContentController: RouteCollection {
         let query = try? req.query.get(String.self, at: "query")
         let category = try? req.query.get(Category.self, at: "category")
 
-        let student: StudentModel? = await fetchStudent(for: req)
+        let student: StudentModel? = await req.fetchStudent()
 
         var array = ArrayResponse()
         for content in try await ContentModel.query(on: req.db)

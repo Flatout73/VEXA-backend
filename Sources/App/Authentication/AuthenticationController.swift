@@ -44,7 +44,7 @@ struct AuthenticationController: RouteCollection {
         
         var user = try User(jsonString: content)
 
-        let hash = try req.password
+        let hash = try await req.password.async
             .hash(user.password)
         user.password = hash
 
@@ -142,7 +142,7 @@ struct AuthenticationController: RouteCollection {
             .guard({ (emailToken: EmailToken) -> Bool in emailToken.expiresAt > Date() },
                    else: AuthenticationError.emailTokenHasExpired)
             .flatMapThrowing {
-                req.users.set(\.$isEmailVerified, to: true, for: $0.$user.id)
+                req.users.set(\.$emailVerified, to: .manually, for: $0.$user.id)
         }
         .transform(to: .ok)
     }
@@ -228,8 +228,8 @@ struct AuthenticationController: RouteCollection {
             throw AuthenticationError.userNotFound
         }
 
-        guard !user.isEmailVerified else {
-            throw AuthenticationError.userNotFound
+        guard user.emailVerified == nil else {
+            throw AuthenticationError.emailAlreadyExists
         }
 
         return try await req.emailVerifier
