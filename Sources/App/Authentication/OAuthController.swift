@@ -32,7 +32,7 @@ struct OAuthController: RouteCollection {
                 let appleIdentityToken = try await req.jwt.apple.verify(request.appleIdentityToken,
                                                                         applicationIdentifier: AppConfig.environment.applicationIdentifier)
                 return try await handleSiwa(appleIdentityToken: appleIdentityToken, req: req, firstName: request.firstName,
-                                     lastName: request.lastName, email: request.email)
+                                            lastName: request.lastName, email: loginRequest.email)
             case .google(let request):
                 let googleIDToken = try await req.jwt.google.verify(request.idToken)
                 return try await handleGoogle(googleToken: googleIDToken, req: req, email: googleIDToken.email ?? loginRequest.email)
