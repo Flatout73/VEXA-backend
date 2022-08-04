@@ -32,6 +32,8 @@ func routes(_ app: Application) throws {
 
         try api.register(collection: AdminController())
         try api.register(collection: AmbassadorController())
+
+        try api.register(collection: OAuthController())
     }
 
     let chatSystem = ChatSystem(eventLoop: app.eventLoopGroup.next())
